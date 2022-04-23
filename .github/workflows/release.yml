@@ -1,0 +1,38 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  binaries:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3.0.2
+
+      - name: Build
+        run: |
+          git clone https://github.com/emscripten-core/emsdk.git --depth 1 --branch "$EMSDK_TAG"
+          cd emsdk
+          ./emsdk install latest
+          ./emsdk activate latest
+          source ./emsdk_env.sh
+          cd ..
+          git clone --depth 1 --branch "$Z3_TAG" https://github.com/Z3Prover/z3
+          cd z3/src/api/js/
+          npm i
+          npm run build-ts
+          npm run build-wasm
+          (cd build/ && tar -czf ../z3.tar.gz *)
+        env:
+          EMSDK_TAG: "3.1.9"
+          Z3_TAG: "z3-4.8.15"
+
+      - name: Release
+        uses: ncipollo/release-action@v1.10.0
+        with:
+          artifacts: "z3/src/api/js/z3.tar.gz"
+          token: ${{ secrets.GITHUB_TOKEN }}
