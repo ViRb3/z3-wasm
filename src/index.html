@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Z3.wasm</title>
+    <script src="../node_modules/coi-serviceworker/coi-serviceworker.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="main">
+      <h1>Z3.wasm</h1>
+
+      <div id="editor"></div>
+
+      <hr />
+
+      <div id="control-panel">
+        <div class="row">
+          <input class="cell" id="command-line-args" type="text" value="-smt2" disabled="disabled" />
+          <span id="run-cell"><input id="run" type="button" value="Loading…" disabled="disabled" /></span>
+        </div>
+      </div>
+      <pre id="stdout"></pre>
+    </div>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ace.js"
+      integrity="sha256-xrr4HH5eSY+cFz4SH7ja/LaAi9qcEdjMpeMP49/iOLs="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/mode-lisp.js"
+      integrity="sha256-wfwED8MuFsljraPmCVHtcP7jjyi6ffnB1kk1kY2ha5g="
+      crossorigin="anonymous"
+    ></script>
+    <script type="module" src="main.js"></script>
+  </body>
+</html>
