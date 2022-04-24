@@ -21,7 +21,7 @@ jobs:
           npm run build
         env:
           GITHUB_REPO: ${{github.repository}}
-          Z3_BUILD_TAG: "v1.0.0"
+          Z3_BUILD_TAG: "v1.0.1"
 
       - name: Deploy Website
         uses: JamesIves/github-pages-deploy-action@v4.3.0

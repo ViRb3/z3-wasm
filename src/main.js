@@ -1,4 +1,5 @@
 import { init } from "../static/wrapper";
+import initZ3 from "../static/z3-built";
 
 (async () => {
   var editor;
@@ -70,14 +71,24 @@ import { init } from "../static/wrapper";
 (assert (> (f y) (g x x)))
 (check-sat)
 (get-model)
+(push)
+(assert (= x y))
+(check-sat)
+(get-model)
+(check-sat)
+(pop)
 (exit)`);
   }
 
   setupAceEditor();
   clear(stdout_textbox);
 
-  const { em, Z3 } = await init();
-  em["mainScriptUrlOrBlob"] = "z3-built.js";
+  const mod = async () =>
+    await initZ3({
+      locateFile: (f) => f,
+      mainScriptUrlOrBlob: "z3-built.js",
+    });
+  const { em, Z3 } = await init(mod);
   enableButton();
   run_button.onclick = verifyCurrentInput;
 })();

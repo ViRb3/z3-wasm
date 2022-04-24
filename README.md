@@ -1,10 +1,10 @@
 # z3-wasm
 
-A simple Z3 SMT2 analyzer, ran entirely in your browser using WebAssembly. Front end taken from https://github.com/cpitclaudel/z3.wasm.
+A simple Z3 SMT2 analyzer, ran entirely in your browser using WebAssembly.
 
-## Using
+## Website
 
-Hop to the website at https://virb3.github.io/z3-wasm/ and type in the textbox. When you click the run button, Z3 will be invoked, and the result will be printed on your screen.
+#### https://virb3.github.io/z3-wasm/
 
 ## Building
 
@@ -16,3 +16,7 @@ npm run build
 ```
 
 The built website will be in `dist/`.
+
+## Credits
+
+Front end heavily influenced from [cpitclaudel/z3.wasm](https://github.com/cpitclaudel/z3.wasm).

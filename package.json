@@ -4,8 +4,8 @@
   "description": "Run Z3 in browser using WebAssembly",
   "source": "src/index.html",
   "scripts": {
-    "start": "rm -rf dist && mkdir dist && cp -r static/ dist && parcel",
-    "build": "rm -rf dist && mkdir dist && cp -r static dist && parcel build --public-url=/z3-wasm"
+    "start": "rm -rf dist && mkdir dist && cp static/z3-built.* dist && parcel",
+    "build": "rm -rf dist && mkdir dist && cp static/z3-built.* dist && parcel build --public-url=/z3-wasm"
   },
   "prettier": {
     "printWidth": 120
