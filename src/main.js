@@ -77,6 +77,8 @@ import initZ3 from "../static/z3-built";
 (get-model)
 (check-sat)
 (pop)
+(declare-fun a () Bool)
+(simplify (or a true))
 (exit)`);
   }
 
