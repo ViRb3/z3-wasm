@@ -21,9 +21,10 @@ function(initZ3) {
 // after the generated code, you will need to define   var Module = {};
 // before the code. Then that object will be used in the code, and you
 // can continue to use Module afterwards as well.
-var Module = typeof initZ3 != 'undefined' ? initZ3 : {};
+var Module = typeof initZ3 !== 'undefined' ? initZ3 : {};
 
 // See https://caniuse.com/mdn-javascript_builtins_object_assign
+var objAssign = Object.assign;
 
 // Set up the promise that indicates the Module is initialized
 var readyPromiseResolve, readyPromiseReject;
@@ -4430,15 +4431,15 @@ Module['ready'] = new Promise(function(resolve, reject) {
       }
     
 
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '__emscripten_thread_crashed')) {
-        Object.defineProperty(Module['ready'], '__emscripten_thread_crashed', { configurable: true, get: function() { abort('You are getting __emscripten_thread_crashed on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '__emscripten_thread_crashed', { configurable: true, set: function() { abort('You are setting __emscripten_thread_crashed on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-      }
-    
-
       if (!Object.getOwnPropertyDescriptor(Module['ready'], '_emscripten_tls_init')) {
         Object.defineProperty(Module['ready'], '_emscripten_tls_init', { configurable: true, get: function() { abort('You are getting _emscripten_tls_init on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
         Object.defineProperty(Module['ready'], '_emscripten_tls_init', { configurable: true, set: function() { abort('You are setting _emscripten_tls_init on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
+      }
+    
+
+      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_emscripten_current_thread_process_queued_calls')) {
+        Object.defineProperty(Module['ready'], '_emscripten_current_thread_process_queued_calls', { configurable: true, get: function() { abort('You are getting _emscripten_current_thread_process_queued_calls on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
+        Object.defineProperty(Module['ready'], '_emscripten_current_thread_process_queued_calls', { configurable: true, set: function() { abort('You are setting _emscripten_current_thread_process_queued_calls on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
       }
     
 
@@ -4460,15 +4461,9 @@ Module['ready'] = new Promise(function(resolve, reject) {
       }
     
 
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '___stdio_exit')) {
-        Object.defineProperty(Module['ready'], '___stdio_exit', { configurable: true, get: function() { abort('You are getting ___stdio_exit on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '___stdio_exit', { configurable: true, set: function() { abort('You are setting ___stdio_exit on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-      }
-    
-
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_emscripten_proxy_execute_queue')) {
-        Object.defineProperty(Module['ready'], '_emscripten_proxy_execute_queue', { configurable: true, get: function() { abort('You are getting _emscripten_proxy_execute_queue on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '_emscripten_proxy_execute_queue', { configurable: true, set: function() { abort('You are setting _emscripten_proxy_execute_queue on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
+      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_fflush')) {
+        Object.defineProperty(Module['ready'], '_fflush', { configurable: true, get: function() { abort('You are getting _fflush on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
+        Object.defineProperty(Module['ready'], '_fflush', { configurable: true, set: function() { abort('You are setting _fflush on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
       }
     
 
@@ -4525,7 +4520,7 @@ Module.async_call = function (f, ...args) {
 // we collect those properties and reapply _after_ we configure
 // the current environment's defaults to avoid having to be so
 // defensive during initialization.
-var moduleOverrides = Object.assign({}, Module);
+var moduleOverrides = objAssign({}, Module);
 
 var arguments_ = [];
 var thisProgram = './this.program';
@@ -4537,20 +4532,20 @@ var quit_ = (status, toThrow) => {
 // setting the ENVIRONMENT setting at compile time (see settings.js).
 
 // Attempt to auto-detect the environment
-var ENVIRONMENT_IS_WEB = typeof window == 'object';
-var ENVIRONMENT_IS_WORKER = typeof importScripts == 'function';
+var ENVIRONMENT_IS_WEB = typeof window === 'object';
+var ENVIRONMENT_IS_WORKER = typeof importScripts === 'function';
 // N.b. Electron.js environment is simultaneously a NODE-environment, but
 // also a web environment.
-var ENVIRONMENT_IS_NODE = typeof process == 'object' && typeof process.versions == 'object' && typeof process.versions.node == 'string';
+var ENVIRONMENT_IS_NODE = typeof process === 'object' && typeof process.versions === 'object' && typeof process.versions.node === 'string';
 var ENVIRONMENT_IS_SHELL = !ENVIRONMENT_IS_WEB && !ENVIRONMENT_IS_NODE && !ENVIRONMENT_IS_WORKER;
 
 if (Module['ENVIRONMENT']) {
-  throw new Error('Module.ENVIRONMENT has been deprecated. To force the environment, use the ENVIRONMENT compile-time option (for example, -sENVIRONMENT=web or -sENVIRONMENT=node)');
+  throw new Error('Module.ENVIRONMENT has been deprecated. To force the environment, use the ENVIRONMENT compile-time option (for example, -s ENVIRONMENT=web or -s ENVIRONMENT=node)');
 }
 
 // Three configurations we can be running in:
 // 1) We could be the application main() thread running in the main JS UI thread. (ENVIRONMENT_IS_WORKER == false and ENVIRONMENT_IS_PTHREAD == false)
-// 2) We could be the application main() thread proxied to worker. (with Emscripten -sPROXY_TO_WORKER) (ENVIRONMENT_IS_WORKER == true, ENVIRONMENT_IS_PTHREAD == false)
+// 2) We could be the application main() thread proxied to worker. (with Emscripten -s PROXY_TO_WORKER=1) (ENVIRONMENT_IS_WORKER == true, ENVIRONMENT_IS_PTHREAD == false)
 // 3) We could be an application pthread running in a worker. (ENVIRONMENT_IS_WORKER == true and ENVIRONMENT_IS_PTHREAD == true)
 
 // ENVIRONMENT_IS_PTHREAD=true will have been preset in worker.js. Make it false in the main runtime thread.
@@ -4581,7 +4576,7 @@ var read_,
 function logExceptionOnExit(e) {
   if (e instanceof ExitStatus) return;
   let toLog = e;
-  if (e && typeof e == 'object' && e.stack) {
+  if (e && typeof e === 'object' && e.stack) {
     toLog = [e, e.stack];
   }
   err('exiting due to exception: ' + toLog);
@@ -4592,7 +4587,7 @@ var nodePath;
 var requireNodeFS;
 
 if (ENVIRONMENT_IS_NODE) {
-  if (!(typeof process == 'object' && typeof require == 'function')) throw new Error('not compiled for this environment (did you build to HTML and try to run it not on the web, or set ENVIRONMENT to something - like node - and run it someplace else - like on the web?)');
+  if (!(typeof process === 'object' && typeof require === 'function')) throw new Error('not compiled for this environment (did you build to HTML and try to run it not on the web, or set ENVIRONMENT to something - like node - and run it someplace else - like on the web?)');
   if (ENVIRONMENT_IS_WORKER) {
     scriptDirectory = require('path').dirname(scriptDirectory) + '/';
   } else {
@@ -4602,7 +4597,7 @@ if (ENVIRONMENT_IS_NODE) {
 // include: node_shell_read.js
 
 
-requireNodeFS = () => {
+requireNodeFS = function() {
   // Use nodePath as the indicator for these not being initialized,
   // since in some environments a global fs may have already been
   // created.
@@ -4610,15 +4605,15 @@ requireNodeFS = () => {
     fs = require('fs');
     nodePath = require('path');
   }
-};
+}
 
 read_ = function shell_read(filename, binary) {
   requireNodeFS();
   filename = nodePath['normalize'](filename);
-  return fs.readFileSync(filename, binary ? undefined : 'utf8');
+  return fs.readFileSync(filename, binary ? null : 'utf8');
 };
 
-readBinary = (filename) => {
+readBinary = function readBinary(filename) {
   var ret = read_(filename, true);
   if (!ret.buffer) {
     ret = new Uint8Array(ret);
@@ -4627,7 +4622,7 @@ readBinary = (filename) => {
   return ret;
 };
 
-readAsync = (filename, onload, onerror) => {
+readAsync = function readAsync(filename, onload, onerror) {
   requireNodeFS();
   filename = nodePath['normalize'](filename);
   fs.readFile(filename, function(err, data) {
@@ -4682,7 +4677,7 @@ readAsync = (filename, onload, onerror) => {
 } else
 if (ENVIRONMENT_IS_SHELL) {
 
-  if ((typeof process == 'object' && typeof require === 'function') || typeof window == 'object' || typeof importScripts == 'function') throw new Error('not compiled for this environment (did you build to HTML and try to run it not on the web, or set ENVIRONMENT to something - like node - and run it someplace else - like on the web?)');
+  if ((typeof process === 'object' && typeof require === 'function') || typeof window === 'object' || typeof importScripts === 'function') throw new Error('not compiled for this environment (did you build to HTML and try to run it not on the web, or set ENVIRONMENT to something - like node - and run it someplace else - like on the web?)');
 
   if (typeof read != 'undefined') {
     read_ = function shell_read(f) {
@@ -4692,11 +4687,11 @@ if (ENVIRONMENT_IS_SHELL) {
 
   readBinary = function readBinary(f) {
     let data;
-    if (typeof readbuffer == 'function') {
+    if (typeof readbuffer === 'function') {
       return new Uint8Array(readbuffer(f));
     }
     data = read(f, 'binary');
-    assert(typeof data == 'object');
+    assert(typeof data === 'object');
     return data;
   };
 
@@ -4710,18 +4705,18 @@ if (ENVIRONMENT_IS_SHELL) {
     arguments_ = arguments;
   }
 
-  if (typeof quit == 'function') {
+  if (typeof quit === 'function') {
     quit_ = (status, toThrow) => {
       logExceptionOnExit(toThrow);
       quit(status);
     };
   }
 
-  if (typeof print != 'undefined') {
+  if (typeof print !== 'undefined') {
     // Prefer to use print/printErr where they exist, as they usually work better.
-    if (typeof console == 'undefined') console = /** @type{!Console} */({});
+    if (typeof console === 'undefined') console = /** @type{!Console} */({});
     console.log = /** @type{!function(this:Console, ...*): undefined} */ (print);
-    console.warn = console.error = /** @type{!function(this:Console, ...*): undefined} */ (typeof printErr != 'undefined' ? printErr : print);
+    console.warn = console.error = /** @type{!function(this:Console, ...*): undefined} */ (typeof printErr !== 'undefined' ? printErr : print);
   }
 
 } else
@@ -4732,7 +4727,7 @@ if (ENVIRONMENT_IS_SHELL) {
 if (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) {
   if (ENVIRONMENT_IS_WORKER) { // Check worker, not web, since window could be polyfilled
     scriptDirectory = self.location.href;
-  } else if (typeof document != 'undefined' && document.currentScript) { // web
+  } else if (typeof document !== 'undefined' && document.currentScript) { // web
     scriptDirectory = document.currentScript.src;
   }
   // When MODULARIZE, this JS may be executed later, after document.currentScript
@@ -4752,24 +4747,65 @@ if (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) {
     scriptDirectory = '';
   }
 
-  if (!(typeof window == 'object' || typeof importScripts == 'function')) throw new Error('not compiled for this environment (did you build to HTML and try to run it not on the web, or set ENVIRONMENT to something - like node - and run it someplace else - like on the web?)');
+  if (!(typeof window === 'object' || typeof importScripts === 'function')) throw new Error('not compiled for this environment (did you build to HTML and try to run it not on the web, or set ENVIRONMENT to something - like node - and run it someplace else - like on the web?)');
 
   // Differentiate the Web Worker from the Node Worker case, as reading must
   // be done differently.
-  if (!ENVIRONMENT_IS_NODE)
+  if (ENVIRONMENT_IS_NODE) {
+
+// include: node_shell_read.js
+
+
+requireNodeFS = function() {
+  // Use nodePath as the indicator for these not being initialized,
+  // since in some environments a global fs may have already been
+  // created.
+  if (!nodePath) {
+    fs = require('fs');
+    nodePath = require('path');
+  }
+}
+
+read_ = function shell_read(filename, binary) {
+  requireNodeFS();
+  filename = nodePath['normalize'](filename);
+  return fs.readFileSync(filename, binary ? null : 'utf8');
+};
+
+readBinary = function readBinary(filename) {
+  var ret = read_(filename, true);
+  if (!ret.buffer) {
+    ret = new Uint8Array(ret);
+  }
+  assert(ret.buffer);
+  return ret;
+};
+
+readAsync = function readAsync(filename, onload, onerror) {
+  requireNodeFS();
+  filename = nodePath['normalize'](filename);
+  fs.readFile(filename, function(err, data) {
+    if (err) onerror(err);
+    else onload(data.buffer);
+  });
+};
+
+// end include: node_shell_read.js
+  } else
   {
+
 // include: web_or_worker_shell_read.js
 
 
-  read_ = (url) => {
+  read_ = function(url) {
       var xhr = new XMLHttpRequest();
       xhr.open('GET', url, false);
       xhr.send(null);
       return xhr.responseText;
-  }
+  };
 
   if (ENVIRONMENT_IS_WORKER) {
-    readBinary = (url) => {
+    readBinary = function(url) {
         var xhr = new XMLHttpRequest();
         xhr.open('GET', url, false);
         xhr.responseType = 'arraybuffer';
@@ -4778,11 +4814,11 @@ if (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) {
     };
   }
 
-  readAsync = (url, onload, onerror) => {
+  readAsync = function(url, onload, onerror) {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', url, true);
     xhr.responseType = 'arraybuffer';
-    xhr.onload = () => {
+    xhr.onload = function() {
       if (xhr.status == 200 || (xhr.status == 0 && xhr.response)) { // file URLs can return 0
         onload(xhr.response);
         return;
@@ -4791,7 +4827,7 @@ if (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) {
     };
     xhr.onerror = onerror;
     xhr.send(null);
-  }
+  };
 
 // end include: web_or_worker_shell_read.js
   }
@@ -4805,7 +4841,7 @@ if (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) {
 if (ENVIRONMENT_IS_NODE) {
   // Polyfill the performance object, which emscripten pthreads support
   // depends on for good timing.
-  if (typeof performance == 'undefined') {
+  if (typeof performance === 'undefined') {
     global.performance = require('perf_hooks').performance;
   }
 }
@@ -4827,38 +4863,93 @@ var out = Module['print'] || defaultPrint;
 var err = Module['printErr'] || defaultPrintErr;
 
 // Merge back in the overrides
-Object.assign(Module, moduleOverrides);
+objAssign(Module, moduleOverrides);
 // Free the object hierarchy contained in the overrides, this lets the GC
 // reclaim data used e.g. in memoryInitializerRequest, which is a large typed array.
 moduleOverrides = null;
-checkIncomingModuleAPI();
 
 // Emit code to handle expected values on the Module object. This applies Module.x
 // to the proper local x. This has two benefits: first, we only emit it if it is
 // expected to arrive, and second, by using a local everywhere else that can be
 // minified.
 
-if (Module['arguments']) arguments_ = Module['arguments'];legacyModuleProp('arguments', 'arguments_');
+if (Module['arguments']) arguments_ = Module['arguments'];
+if (!Object.getOwnPropertyDescriptor(Module, 'arguments')) {
+  Object.defineProperty(Module, 'arguments', {
+    configurable: true,
+    get: function() {
+      abort('Module.arguments has been replaced with plain arguments_ (the initial value can be provided on Module, but after startup the value is only looked for on a local variable of that name)')
+    }
+  });
+}
 
-if (Module['thisProgram']) thisProgram = Module['thisProgram'];legacyModuleProp('thisProgram', 'thisProgram');
+if (Module['thisProgram']) thisProgram = Module['thisProgram'];
+if (!Object.getOwnPropertyDescriptor(Module, 'thisProgram')) {
+  Object.defineProperty(Module, 'thisProgram', {
+    configurable: true,
+    get: function() {
+      abort('Module.thisProgram has been replaced with plain thisProgram (the initial value can be provided on Module, but after startup the value is only looked for on a local variable of that name)')
+    }
+  });
+}
 
-if (Module['quit']) quit_ = Module['quit'];legacyModuleProp('quit', 'quit_');
+if (Module['quit']) quit_ = Module['quit'];
+if (!Object.getOwnPropertyDescriptor(Module, 'quit')) {
+  Object.defineProperty(Module, 'quit', {
+    configurable: true,
+    get: function() {
+      abort('Module.quit has been replaced with plain quit_ (the initial value can be provided on Module, but after startup the value is only looked for on a local variable of that name)')
+    }
+  });
+}
 
 // perform assertions in shell.js after we set up out() and err(), as otherwise if an assertion fails it cannot print the message
 // Assertions on removed incoming Module JS APIs.
-assert(typeof Module['memoryInitializerPrefixURL'] == 'undefined', 'Module.memoryInitializerPrefixURL option was removed, use Module.locateFile instead');
-assert(typeof Module['pthreadMainPrefixURL'] == 'undefined', 'Module.pthreadMainPrefixURL option was removed, use Module.locateFile instead');
-assert(typeof Module['cdInitializerPrefixURL'] == 'undefined', 'Module.cdInitializerPrefixURL option was removed, use Module.locateFile instead');
-assert(typeof Module['filePackagePrefixURL'] == 'undefined', 'Module.filePackagePrefixURL option was removed, use Module.locateFile instead');
-assert(typeof Module['read'] == 'undefined', 'Module.read option was removed (modify read_ in JS)');
-assert(typeof Module['readAsync'] == 'undefined', 'Module.readAsync option was removed (modify readAsync in JS)');
-assert(typeof Module['readBinary'] == 'undefined', 'Module.readBinary option was removed (modify readBinary in JS)');
-assert(typeof Module['setWindowTitle'] == 'undefined', 'Module.setWindowTitle option was removed (modify setWindowTitle in JS)');
-assert(typeof Module['TOTAL_MEMORY'] == 'undefined', 'Module.TOTAL_MEMORY has been renamed Module.INITIAL_MEMORY');
-legacyModuleProp('read', 'read_');
-legacyModuleProp('readAsync', 'readAsync');
-legacyModuleProp('readBinary', 'readBinary');
-legacyModuleProp('setWindowTitle', 'setWindowTitle');
+assert(typeof Module['memoryInitializerPrefixURL'] === 'undefined', 'Module.memoryInitializerPrefixURL option was removed, use Module.locateFile instead');
+assert(typeof Module['pthreadMainPrefixURL'] === 'undefined', 'Module.pthreadMainPrefixURL option was removed, use Module.locateFile instead');
+assert(typeof Module['cdInitializerPrefixURL'] === 'undefined', 'Module.cdInitializerPrefixURL option was removed, use Module.locateFile instead');
+assert(typeof Module['filePackagePrefixURL'] === 'undefined', 'Module.filePackagePrefixURL option was removed, use Module.locateFile instead');
+assert(typeof Module['read'] === 'undefined', 'Module.read option was removed (modify read_ in JS)');
+assert(typeof Module['readAsync'] === 'undefined', 'Module.readAsync option was removed (modify readAsync in JS)');
+assert(typeof Module['readBinary'] === 'undefined', 'Module.readBinary option was removed (modify readBinary in JS)');
+assert(typeof Module['setWindowTitle'] === 'undefined', 'Module.setWindowTitle option was removed (modify setWindowTitle in JS)');
+assert(typeof Module['TOTAL_MEMORY'] === 'undefined', 'Module.TOTAL_MEMORY has been renamed Module.INITIAL_MEMORY');
+
+if (!Object.getOwnPropertyDescriptor(Module, 'read')) {
+  Object.defineProperty(Module, 'read', {
+    configurable: true,
+    get: function() {
+      abort('Module.read has been replaced with plain read_ (the initial value can be provided on Module, but after startup the value is only looked for on a local variable of that name)')
+    }
+  });
+}
+
+if (!Object.getOwnPropertyDescriptor(Module, 'readAsync')) {
+  Object.defineProperty(Module, 'readAsync', {
+    configurable: true,
+    get: function() {
+      abort('Module.readAsync has been replaced with plain readAsync (the initial value can be provided on Module, but after startup the value is only looked for on a local variable of that name)')
+    }
+  });
+}
+
+if (!Object.getOwnPropertyDescriptor(Module, 'readBinary')) {
+  Object.defineProperty(Module, 'readBinary', {
+    configurable: true,
+    get: function() {
+      abort('Module.readBinary has been replaced with plain readBinary (the initial value can be provided on Module, but after startup the value is only looked for on a local variable of that name)')
+    }
+  });
+}
+
+if (!Object.getOwnPropertyDescriptor(Module, 'setWindowTitle')) {
+  Object.defineProperty(Module, 'setWindowTitle', {
+    configurable: true,
+    get: function() {
+      abort('Module.setWindowTitle has been replaced with plain setWindowTitle (the initial value can be provided on Module, but after startup the value is only looked for on a local variable of that name)')
+    }
+  });
+}
 var IDBFS = 'IDBFS is no longer included by default; build with -lidbfs.js';
 var PROXYFS = 'PROXYFS is no longer included by default; build with -lproxyfs.js';
 var WORKERFS = 'WORKERFS is no longer included by default; build with -lworkerfs.js';
@@ -4867,7 +4958,7 @@ var NODEFS = 'NODEFS is no longer included by default; build with -lnodefs.js';
 
 assert(ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER || ENVIRONMENT_IS_NODE, 'Pthreads do not work in this environment yet (need Web Workers, or an alternative to them)');
 
-assert(!ENVIRONMENT_IS_SHELL, "shell environment detected but not enabled at build time.  Add 'shell' to `-sENVIRONMENT` to enable.");
+assert(!ENVIRONMENT_IS_SHELL, "shell environment detected but not enabled at build time.  Add 'shell' to `-s ENVIRONMENT` to enable.");
 
 
 
@@ -4884,10 +4975,10 @@ function getNativeTypeSize(type) {
     case 'float': return 4;
     case 'double': return 8;
     default: {
-      if (type[type.length - 1] === '*') {
+      if (type[type.length-1] === '*') {
         return POINTER_SIZE;
       } else if (type[0] === 'i') {
-        const bits = Number(type.substr(1));
+        var bits = Number(type.substr(1));
         assert(bits % 8 === 0, 'getNativeTypeSize invalid bits ' + bits + ', type ' + type);
         return bits / 8;
       } else {
@@ -4908,16 +4999,6 @@ function warnOnce(text) {
 // include: runtime_functions.js
 
 
-// This gives correct answers for everything less than 2^{14} = 16384
-// I hope nobody is contemplating functions with 16384 arguments...
-function uleb128Encode(n) {
-  assert(n < 16384);
-  if (n < 128) {
-    return [n];
-  }
-  return [(n % 128) | 128, n >> 7];
-}
-
 // Wraps a JS function as a wasm function with a given signature.
 function convertJsFunctionToWasm(func, sig) {
 
@@ -4925,7 +5006,7 @@ function convertJsFunctionToWasm(func, sig) {
   // "WebAssembly.Function" constructor.
   // Otherwise, construct a minimal wasm module importing the JS function and
   // re-exporting it.
-  if (typeof WebAssembly.Function == "function") {
+  if (typeof WebAssembly.Function === "function") {
     var typeNames = {
       'i': 'i32',
       'j': 'i64',
@@ -4945,6 +5026,8 @@ function convertJsFunctionToWasm(func, sig) {
   // The module is static, with the exception of the type section, which is
   // generated based on the signature passed in.
   var typeSection = [
+    0x01, // id: section,
+    0x00, // length: 0 (placeholder)
     0x01, // count: 1
     0x60, // form: func
   ];
@@ -4958,7 +5041,7 @@ function convertJsFunctionToWasm(func, sig) {
   };
 
   // Parameters, length + signatures
-  typeSection = typeSection.concat(uleb128Encode(sigParam.length));
+  typeSection.push(sigParam.length);
   for (var i = 0; i < sigParam.length; ++i) {
     typeSection.push(typeCodes[sigParam[i]]);
   }
@@ -4971,12 +5054,9 @@ function convertJsFunctionToWasm(func, sig) {
     typeSection = typeSection.concat([0x01, typeCodes[sigRet]]);
   }
 
-  // Write the section code and overall length of the type section into the
-  // section header
-  typeSection = [0x01 /* Type section code */].concat(
-    uleb128Encode(typeSection.length),
-    typeSection
-  );
+  // Write the overall length of the type section back into the section header
+  // (excepting the 2 bytes for the section id and length)
+  typeSection[1] = typeSection.length - 2;
 
   // Rest of the module is static
   var bytes = new Uint8Array([
@@ -5035,13 +5115,10 @@ function updateTableMap(offset, count) {
   }
 }
 
-/**
- * Add a function to the table.
- * 'sig' parameter is required if the function being added is a JS function.
- * @param {string=} sig
- */
+// Add a function to the table.
+// 'sig' parameter is required if the function being added is a JS function.
 function addFunction(func, sig) {
-  assert(typeof func != 'undefined');
+  assert(typeof func !== 'undefined');
 
   // Check if the function is already in the table, to ensure each function
   // gets a unique index. First, create the map if this is the first use.
@@ -5065,7 +5142,7 @@ function addFunction(func, sig) {
     if (!(err instanceof TypeError)) {
       throw err;
     }
-    assert(typeof sig != 'undefined', 'Missing signature argument to addFunction: ' + func);
+    assert(typeof sig !== 'undefined', 'Missing signature argument to addFunction: ' + func);
     var wrapped = convertJsFunctionToWasm(func, sig);
     setWasmTableEntry(ret, wrapped);
   }
@@ -5084,52 +5161,16 @@ function removeFunction(index) {
 // include: runtime_debug.js
 
 
-function legacyModuleProp(prop, newName) {
-  if (!Object.getOwnPropertyDescriptor(Module, prop)) {
-    Object.defineProperty(Module, prop, {
-      configurable: true,
-      get: function() {
-        abort('Module.' + prop + ' has been replaced with plain ' + newName + ' (the initial value can be provided on Module, but after startup the value is only looked for on a local variable of that name)');
-      }
-    });
-  }
-}
-
-function ignoredModuleProp(prop) {
-  if (Object.getOwnPropertyDescriptor(Module, prop)) {
-    abort('`Module.' + prop + '` was supplied but `' + prop + '` not included in INCOMING_MODULE_JS_API');
-  }
-}
-
-function unexportedMessage(sym, isFSSybol) {
-  var msg = "'" + sym + "' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)";
-  if (isFSSybol) {
-    msg += '. Alternatively, forcing filesystem support (-sFORCE_FILESYSTEM) can export this for you';
-  }
-  return msg;
-}
-
-function unexportedRuntimeSymbol(sym, isFSSybol) {
-  if (!Object.getOwnPropertyDescriptor(Module, sym)) {
-    Object.defineProperty(Module, sym, {
-      configurable: true,
-      get: function() {
-        abort(unexportedMessage(sym, isFSSybol));
-      }
-    });
-  }
-}
-
-function unexportedRuntimeFunction(sym, isFSSybol) {
-  if (!Object.getOwnPropertyDescriptor(Module, sym)) {
-    Module[sym] = () => abort(unexportedMessage(sym, isFSSybol));
-  }
-}
-
 // end include: runtime_debug.js
 var tempRet0 = 0;
-var setTempRet0 = (value) => { tempRet0 = value; };
-var getTempRet0 = () => tempRet0;
+
+var setTempRet0 = function(value) {
+  tempRet0 = value;
+};
+
+var getTempRet0 = function() {
+  return tempRet0;
+};
 
 // JS library code refers to Atomics in the manner used from asm.js, provide
 // the same API here.
@@ -5150,10 +5191,26 @@ var Atomics_compareExchange = Atomics.compareExchange;
 //    is up at http://kripken.github.io/emscripten-site/docs/api_reference/preamble.js.html
 
 var wasmBinary;
-if (Module['wasmBinary']) wasmBinary = Module['wasmBinary'];legacyModuleProp('wasmBinary', 'wasmBinary');
-var noExitRuntime = Module['noExitRuntime'] || true;legacyModuleProp('noExitRuntime', 'noExitRuntime');
+if (Module['wasmBinary']) wasmBinary = Module['wasmBinary'];
+if (!Object.getOwnPropertyDescriptor(Module, 'wasmBinary')) {
+  Object.defineProperty(Module, 'wasmBinary', {
+    configurable: true,
+    get: function() {
+      abort('Module.wasmBinary has been replaced with plain wasmBinary (the initial value can be provided on Module, but after startup the value is only looked for on a local variable of that name)')
+    }
+  });
+}
+var noExitRuntime = Module['noExitRuntime'] || true;
+if (!Object.getOwnPropertyDescriptor(Module, 'noExitRuntime')) {
+  Object.defineProperty(Module, 'noExitRuntime', {
+    configurable: true,
+    get: function() {
+      abort('Module.noExitRuntime has been replaced with plain noExitRuntime (the initial value can be provided on Module, but after startup the value is only looked for on a local variable of that name)')
+    }
+  });
+}
 
-if (typeof WebAssembly != 'object') {
+if (typeof WebAssembly !== 'object') {
   abort('no native wasm support detected');
 }
 
@@ -5167,7 +5224,8 @@ if (typeof WebAssembly != 'object') {
     @param {number} value
     @param {string} type
     @param {number|boolean=} noSafe */
-function setValue(ptr, value, type = 'i8', noSafe) {
+function setValue(ptr, value, type, noSafe) {
+  type = type || 'i8';
   if (type.charAt(type.length-1) === '*') type = 'i32';
     switch (type) {
       case 'i1': HEAP8[((ptr)>>0)] = value; break;
@@ -5184,7 +5242,8 @@ function setValue(ptr, value, type = 'i8', noSafe) {
 /** @param {number} ptr
     @param {string} type
     @param {number|boolean=} noSafe */
-function getValue(ptr, type = 'i8', noSafe) {
+function getValue(ptr, type, noSafe) {
+  type = type || 'i8';
   if (type.charAt(type.length-1) === '*') type = 'i32';
     switch (type) {
       case 'i1': return HEAP8[((ptr)>>0)];
@@ -5302,25 +5361,21 @@ function cwrap(ident, returnType, argTypes, opts) {
 // We used to include malloc/free by default in the past. Show a helpful error in
 // builds with assertions.
 
-// include: runtime_legacy.js
-
-
 var ALLOC_NORMAL = 0; // Tries to use _malloc()
 var ALLOC_STACK = 1; // Lives for the duration of the current function call
 
-/**
- * allocate(): This function is no longer used by emscripten but is kept around to avoid
- *             breaking external users.
- *             You should normally not use allocate(), and instead allocate
- *             memory using _malloc()/stackAlloc(), initialize it with
- *             setValue(), and so forth.
- * @param {(Uint8Array|Array<number>)} slab: An array of data.
- * @param {number=} allocator : How to allocate memory, see ALLOC_*
- */
+// allocate(): This is for internal use. You can use it yourself as well, but the interface
+//             is a little tricky (see docs right below). The reason is that it is optimized
+//             for multiple syntaxes to save space in generated code. So you should
+//             normally not use allocate(), and instead allocate memory using _malloc(),
+//             initialize it with setValue(), and so forth.
+// @slab: An array of data.
+// @allocator: How to allocate memory, see ALLOC_*
+/** @type {function((Uint8Array|Array<number>), number)} */
 function allocate(slab, allocator) {
   var ret;
-  assert(typeof allocator == 'number', 'allocate no longer takes a type argument')
-  assert(typeof slab != 'number', 'allocate no longer takes a number as arg0')
+  assert(typeof allocator === 'number', 'allocate no longer takes a type argument')
+  assert(typeof slab !== 'number', 'allocate no longer takes a number as arg0')
 
   if (allocator == ALLOC_STACK) {
     ret = stackAlloc(slab.length);
@@ -5328,39 +5383,58 @@ function allocate(slab, allocator) {
     ret = _malloc(slab.length);
   }
 
-  if (!slab.subarray && !slab.slice) {
-    slab = new Uint8Array(slab);
+  if (slab.subarray || slab.slice) {
+    HEAPU8.set(/** @type {!Uint8Array} */(slab), ret);
+  } else {
+    HEAPU8.set(new Uint8Array(slab), ret);
   }
-  HEAPU8.set(slab, ret);
   return ret;
 }
 
-// end include: runtime_legacy.js
 // include: runtime_strings.js
 
 
 // runtime_strings.js: Strings related runtime functions that are part of both MINIMAL_RUNTIME and regular runtime.
 
-var UTF8Decoder = typeof TextDecoder != 'undefined' ? new TextDecoder('utf8') : undefined;
-
 // Given a pointer 'ptr' to a null-terminated UTF8-encoded string in the given array that contains uint8 values, returns
 // a copy of that string as a Javascript String object.
+
+// UTF8Decoder.decode may not work with a view of a SharedArrayBuffer, see
+// https://github.com/whatwg/encoding/issues/172
+// To avoid that, we wrap around it and add a copy into a normal ArrayBuffer,
+// which can still be much faster than creating a string character by
+// character.
+function TextDecoderWrapper(encoding) {
+  var textDecoder = new TextDecoder(encoding);
+  this.decode = (data) => {
+    assert(data instanceof Uint8Array);
+    // While we compile with pthreads, this method can be called on side buffers
+    // as well, such as the stdout buffer in the filesystem code. Only copy when
+    // we have to.
+    if (data.buffer instanceof SharedArrayBuffer) {
+      data = new Uint8Array(data);
+    }
+    return textDecoder.decode.call(textDecoder, data);
+  };
+}
+
+var UTF8Decoder = typeof TextDecoder !== 'undefined' ? new TextDecoderWrapper('utf8') : undefined;
+
 /**
- * heapOrArray is either a regular array, or a JavaScript typed array view.
  * @param {number} idx
  * @param {number=} maxBytesToRead
  * @return {string}
  */
-function UTF8ArrayToString(heapOrArray, idx, maxBytesToRead) {
+function UTF8ArrayToString(heap, idx, maxBytesToRead) {
   var endIdx = idx + maxBytesToRead;
   var endPtr = idx;
   // TextDecoder needs to know the byte length in advance, it doesn't stop on null terminator by itself.
   // Also, use the length info to avoid running tiny strings through TextDecoder, since .subarray() allocates garbage.
   // (As a tiny code save trick, compare endPtr against endIdx using a negation, so that undefined means Infinity)
-  while (heapOrArray[endPtr] && !(endPtr >= endIdx)) ++endPtr;
+  while (heap[endPtr] && !(endPtr >= endIdx)) ++endPtr;
 
-  if (endPtr - idx > 16 && heapOrArray.buffer && UTF8Decoder) {
-    return UTF8Decoder.decode(heapOrArray.buffer instanceof SharedArrayBuffer ? heapOrArray.slice(idx, endPtr) : heapOrArray.subarray(idx, endPtr));
+  if (endPtr - idx > 16 && heap.subarray && UTF8Decoder) {
+    return UTF8Decoder.decode(heap.subarray(idx, endPtr));
   } else {
     var str = '';
     // If building with TextDecoder, we have already computed the string length above, so test loop end condition against that
@@ -5369,16 +5443,16 @@ function UTF8ArrayToString(heapOrArray, idx, maxBytesToRead) {
       // http://en.wikipedia.org/wiki/UTF-8#Description
       // https://www.ietf.org/rfc/rfc2279.txt
       // https://tools.ietf.org/html/rfc3629
-      var u0 = heapOrArray[idx++];
+      var u0 = heap[idx++];
       if (!(u0 & 0x80)) { str += String.fromCharCode(u0); continue; }
-      var u1 = heapOrArray[idx++] & 63;
+      var u1 = heap[idx++] & 63;
       if ((u0 & 0xE0) == 0xC0) { str += String.fromCharCode(((u0 & 31) << 6) | u1); continue; }
-      var u2 = heapOrArray[idx++] & 63;
+      var u2 = heap[idx++] & 63;
       if ((u0 & 0xF0) == 0xE0) {
         u0 = ((u0 & 15) << 12) | (u1 << 6) | u2;
       } else {
         if ((u0 & 0xF8) != 0xF0) warnOnce('Invalid UTF-8 leading byte 0x' + u0.toString(16) + ' encountered when deserializing a UTF-8 string in wasm memory to a JS string!');
-        u0 = ((u0 & 7) << 18) | (u1 << 12) | (u2 << 6) | (heapOrArray[idx++] & 63);
+        u0 = ((u0 & 7) << 18) | (u1 << 12) | (u2 << 6) | (heap[idx++] & 63);
       }
 
       if (u0 < 0x10000) {
@@ -5520,7 +5594,7 @@ function stringToAscii(str, outPtr) {
 // Given a pointer 'ptr' to a null-terminated UTF16LE-encoded string in the emscripten HEAP, returns
 // a copy of that string as a Javascript String object.
 
-var UTF16Decoder = typeof TextDecoder != 'undefined' ? new TextDecoder('utf-16le') : undefined;
+var UTF16Decoder = typeof TextDecoder !== 'undefined' ? new TextDecoderWrapper('utf-16le') : undefined;
 
 function UTF16ToString(ptr, maxBytesToRead) {
   assert(ptr % 2 == 0, 'Pointer passed to UTF16ToString must be aligned to two bytes!');
@@ -5535,7 +5609,7 @@ function UTF16ToString(ptr, maxBytesToRead) {
   endPtr = idx << 1;
 
   if (endPtr - ptr > 32 && UTF16Decoder) {
-    return UTF16Decoder.decode(HEAPU8.slice(ptr, endPtr));
+    return UTF16Decoder.decode(HEAPU8.subarray(ptr, endPtr));
   } else {
     var str = '';
 
@@ -5723,31 +5797,37 @@ function writeAsciiToMemory(str, buffer, dontAddNull) {
 // end include: runtime_strings_extra.js
 // Memory management
 
+function alignUp(x, multiple) {
+  if (x % multiple > 0) {
+    x += multiple - (x % multiple);
+  }
+  return x;
+}
+
 var HEAP,
-/** @type {!ArrayBuffer} */
+/** @type {ArrayBuffer} */
   buffer,
-/** @type {!Int8Array} */
+/** @type {Int8Array} */
   HEAP8,
-/** @type {!Uint8Array} */
+/** @type {Uint8Array} */
   HEAPU8,
-/** @type {!Int16Array} */
+/** @type {Int16Array} */
   HEAP16,
-/** @type {!Uint16Array} */
+/** @type {Uint16Array} */
   HEAPU16,
-/** @type {!Int32Array} */
+/** @type {Int32Array} */
   HEAP32,
-/** @type {!Uint32Array} */
+/** @type {Uint32Array} */
   HEAPU32,
-/** @type {!Float32Array} */
+/** @type {Float32Array} */
   HEAPF32,
-/* BigInt64Array type is not correctly defined in closure
-/** not-@type {!BigInt64Array} */
-  HEAP64,
-/* BigUInt64Array type is not correctly defined in closure
-/** not-t@type {!BigUint64Array} */
-  HEAPU64,
-/** @type {!Float64Array} */
+/** @type {Float64Array} */
   HEAPF64;
+
+/** @type {BigInt64Array} */
+var HEAP64,
+/** @type {BigUint64Array} */
+    HEAPU64;
 
 if (ENVIRONMENT_IS_PTHREAD) {
   // Grab imports from the pthread to local scope.
@@ -5772,12 +5852,20 @@ function updateGlobalBufferAndViews(buf) {
 var TOTAL_STACK = 5242880;
 if (Module['TOTAL_STACK']) assert(TOTAL_STACK === Module['TOTAL_STACK'], 'the stack size can no longer be determined at runtime')
 
-var INITIAL_MEMORY = Module['INITIAL_MEMORY'] || 1073741824;legacyModuleProp('INITIAL_MEMORY', 'INITIAL_MEMORY');
+var INITIAL_MEMORY = Module['INITIAL_MEMORY'] || 1073741824;
+if (!Object.getOwnPropertyDescriptor(Module, 'INITIAL_MEMORY')) {
+  Object.defineProperty(Module, 'INITIAL_MEMORY', {
+    configurable: true,
+    get: function() {
+      abort('Module.INITIAL_MEMORY has been replaced with plain INITIAL_MEMORY (the initial value can be provided on Module, but after startup the value is only looked for on a local variable of that name)')
+    }
+  });
+}
 
 assert(INITIAL_MEMORY >= TOTAL_STACK, 'INITIAL_MEMORY should be larger than TOTAL_STACK, was ' + INITIAL_MEMORY + '! (TOTAL_STACK=' + TOTAL_STACK + ')');
 
 // check for full engine support (use string 'subarray' to avoid closure compiler confusion)
-assert(typeof Int32Array != 'undefined' && typeof Float64Array !== 'undefined' && Int32Array.prototype.subarray != undefined && Int32Array.prototype.set != undefined,
+assert(typeof Int32Array !== 'undefined' && typeof Float64Array !== 'undefined' && Int32Array.prototype.subarray !== undefined && Int32Array.prototype.set !== undefined,
        'JS engine does not provide full typed array support');
 
 // In non-standalone/normal mode, we create the memory here.
@@ -5838,11 +5926,9 @@ var wasmTable;
 function writeStackCookie() {
   var max = _emscripten_stack_get_end();
   assert((max & 3) == 0);
-  // The stack grow downwards towards _emscripten_stack_get_end.
-  // We write cookies to the final two words in the stack and detect if they are
-  // ever overwritten.
-  HEAP32[((max)>>2)] = 0x2135467;
-  HEAP32[(((max)+(4))>>2)] = 0x89BACDFE;
+  // The stack grows downwards
+  HEAP32[((max + 4)>>2)] = 0x2135467;
+  HEAP32[((max + 8)>>2)] = 0x89BACDFE;
   // Also test the global address 0 for integrity.
   HEAP32[0] = 0x63736d65; /* 'emsc' */
 }
@@ -5850,8 +5936,8 @@ function writeStackCookie() {
 function checkStackCookie() {
   if (ABORT) return;
   var max = _emscripten_stack_get_end();
-  var cookie1 = HEAPU32[((max)>>2)];
-  var cookie2 = HEAPU32[(((max)+(4))>>2)];
+  var cookie1 = HEAPU32[((max + 4)>>2)];
+  var cookie2 = HEAPU32[((max + 8)>>2)];
   if (cookie1 != 0x2135467 || cookie2 != 0x89BACDFE) {
     abort('Stack overflow! Stack cookie has been overwritten, expected hex dwords 0x89BACDFE and 0x2135467, but received 0x' + cookie2.toString(16) + ' 0x' + cookie1.toString(16));
   }
@@ -5868,7 +5954,7 @@ function checkStackCookie() {
   var h16 = new Int16Array(1);
   var h8 = new Int8Array(h16.buffer);
   h16[0] = 0x6373;
-  if (h8[0] !== 0x73 || h8[1] !== 0x63) throw 'Runtime error: expected the system to be little-endian! (Run with -sSUPPORT_BIG_ENDIAN to bypass)';
+  if (h8[0] !== 0x73 || h8[1] !== 0x63) throw 'Runtime error: expected the system to be little-endian! (Run with -s SUPPORT_BIG_ENDIAN=1 to bypass)';
 })();
 
 // end include: runtime_assertions.js
@@ -5878,9 +5964,11 @@ var __ATEXIT__    = []; // functions called during shutdown
 var __ATPOSTRUN__ = []; // functions called after the main() is called
 
 var runtimeInitialized = false;
+var runtimeExited = false;
+var runtimeKeepaliveCounter = 0;
 
 function keepRuntimeAlive() {
-  return noExitRuntime;
+  return noExitRuntime || runtimeKeepaliveCounter > 0;
 }
 
 function preRun() {
@@ -5910,6 +5998,13 @@ FS.ignorePermissions = false;
 
 TTY.init();
   callRuntimeCallbacks(__ATINIT__);
+}
+
+function exitRuntime() {
+  checkStackCookie();
+  if (ENVIRONMENT_IS_PTHREAD) return; // PThreads reuse the runtime from the main thread.
+  PThread.terminateAllThreads();
+  runtimeExited = true;
 }
 
 function postRun() {
@@ -5988,7 +6083,7 @@ function addRunDependency(id) {
   if (id) {
     assert(!runDependencyTracking[id]);
     runDependencyTracking[id] = 1;
-    if (runDependencyWatcher === null && typeof setInterval != 'undefined') {
+    if (runDependencyWatcher === null && typeof setInterval !== 'undefined') {
       // Check for missing dependencies every few seconds
       runDependencyWatcher = setInterval(function() {
         if (ABORT) {
@@ -6040,6 +6135,9 @@ function removeRunDependency(id) {
   }
 }
 
+Module["preloadedImages"] = {}; // maps url to image data
+Module["preloadedAudios"] = {}; // maps url to audio data
+
 /** @param {string|number=} what */
 function abort(what) {
   // When running on a pthread, none of the incoming parameters on the module
@@ -6067,13 +6165,6 @@ function abort(what) {
   // Use a wasm runtime error, because a JS error might be seen as a foreign
   // exception, which means we'd run destructors on it. We need the error to
   // simply make the program stop.
-
-  // Suppress closure compiler warning here. Closure compiler's builtin extern
-  // defintion for WebAssembly.RuntimeError claims it takes no arguments even
-  // though it can.
-  // TODO(https://github.com/google/closure-compiler/pull/3913): Remove if/when upstream closure gets fixed.
-
-  /** @suppress {checkTypes} */
   var e = new WebAssembly.RuntimeError(what);
 
   readyPromiseReject(e);
@@ -6107,7 +6198,6 @@ function isFileURI(filename) {
 }
 
 // end include: URIUtils.js
-/** @param {boolean=} fixedasm */
 function createExportWrapper(name, fixedasm) {
   return function() {
     var displayName = name;
@@ -6116,6 +6206,7 @@ function createExportWrapper(name, fixedasm) {
       asm = Module['asm'];
     }
     assert(runtimeInitialized, 'native function `' + displayName + '` called before runtime initialization');
+    assert(!runtimeExited, 'native function `' + displayName + '` called after runtime exit (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
     if (!asm[name]) {
       assert(asm[name], 'exported native function `' + displayName + '` not found');
     }
@@ -6152,7 +6243,7 @@ function getBinaryPromise() {
   // Cordova or Electron apps are typically loaded from a file:// url.
   // So use fetch if it is available and the url is not a file, otherwise fall back to XHR.
   if (!wasmBinary && (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER)) {
-    if (typeof fetch == 'function'
+    if (typeof fetch === 'function'
       && !isFileURI(wasmBinaryFile)
     ) {
       return fetch(wasmBinaryFile, { credentials: 'same-origin' }).then(function(response) {
@@ -6204,14 +6295,12 @@ function createWasm() {
 
     // We now have the Wasm module loaded up, keep a reference to the compiled module so we can post it to the workers.
     wasmModule = module;
-
     // Instantiation is synchronous in pthreads and we assert on run dependencies.
     if (!ENVIRONMENT_IS_PTHREAD) {
       // PTHREAD_POOL_DELAY_LOAD==1 (or no preloaded pool in use): do not wait up for the Workers to
       // instantiate the Wasm module, but proceed with main() immediately.
       removeRunDependency('wasm-instantiate');
     }
-
   }
   // we can't run yet (except in a pthread, where we have a custom sync instantiator)
   if (!ENVIRONMENT_IS_PTHREAD) { addRunDependency('wasm-instantiate'); }
@@ -6247,17 +6336,12 @@ function createWasm() {
 
   function instantiateAsync() {
     if (!wasmBinary &&
-        typeof WebAssembly.instantiateStreaming == 'function' &&
+        typeof WebAssembly.instantiateStreaming === 'function' &&
         !isDataURI(wasmBinaryFile) &&
         // Don't use streaming for file:// delivered objects in a webview, fetch them synchronously.
         !isFileURI(wasmBinaryFile) &&
-        typeof fetch == 'function') {
-      return fetch(wasmBinaryFile, { credentials: 'same-origin' }).then(function(response) {
-        // Suppress closure warning here since the upstream definition for
-        // instantiateStreaming only allows Promise<Repsponse> rather than
-        // an actual Response.
-        // TODO(https://github.com/google/closure-compiler/pull/3913): Remove if/when upstream closure is fixed.
-        /** @suppress {checkTypes} */
+        typeof fetch === 'function') {
+      return fetch(wasmBinaryFile, { credentials: 'same-origin' }).then(function (response) {
         var result = WebAssembly.instantiateStreaming(response, info);
 
         return result.then(
@@ -6278,7 +6362,6 @@ function createWasm() {
   // User shell pages can write their own Module.instantiateWasm = function(imports, successCallback) callback
   // to manually instantiate the Wasm module themselves. This allows pages to run the instantiation parallel
   // to any other async startup actions they are performing.
-  // Also pthreads and wasm workers initialize the wasm instance through this path.
   if (Module['instantiateWasm']) {
     try {
       var exports = Module['instantiateWasm'](info, receiveInstance);
@@ -6301,54 +6384,54 @@ var tempI64;
 // === Body ===
 
 var ASM_CONSTS = {
-  403928: function($0) {resolve_async(UTF8ToString($0));},  
- 403965: function() {reject_async(new Error('failed with unknown exception'));},  
- 404027: function($0) {reject_async(new Error(UTF8ToString($0)));},  
- 404074: function($0) {resolve_async($0);},  
- 404097: function() {reject_async('failed with unknown exception');},  
- 404148: function($0) {reject_async(new Error(UTF8ToString($0)));},  
- 404195: function($0) {resolve_async($0);},  
- 404218: function() {reject_async('failed with unknown exception');},  
- 404269: function($0) {reject_async(new Error(UTF8ToString($0)));},  
- 404316: function($0) {resolve_async($0);},  
- 404339: function() {reject_async('failed with unknown exception');},  
- 404390: function($0) {reject_async(new Error(UTF8ToString($0)));},  
- 404437: function($0) {resolve_async($0);},  
- 404460: function() {reject_async('failed with unknown exception');},  
- 404511: function($0) {reject_async(new Error(UTF8ToString($0)));},  
- 404558: function($0) {resolve_async($0);},  
- 404581: function() {reject_async('failed with unknown exception');},  
- 404632: function($0) {reject_async(new Error(UTF8ToString($0)));},  
- 404679: function($0) {resolve_async($0);},  
- 404702: function() {reject_async('failed with unknown exception');},  
- 404753: function($0) {reject_async(new Error(UTF8ToString($0)));},  
- 404800: function($0) {resolve_async($0);},  
- 404823: function() {reject_async('failed with unknown exception');},  
- 404874: function($0) {reject_async(new Error(UTF8ToString($0)));},  
- 404921: function($0) {resolve_async($0);},  
- 404944: function() {reject_async('failed with unknown exception');},  
- 404995: function($0) {reject_async(new Error(UTF8ToString($0)));},  
- 405042: function($0) {resolve_async($0);},  
- 405065: function() {reject_async('failed with unknown exception');},  
- 405116: function($0) {reject_async(new Error(UTF8ToString($0)));},  
- 405163: function($0) {resolve_async($0);},  
- 405186: function() {reject_async('failed with unknown exception');},  
- 405237: function($0) {reject_async(new Error(UTF8ToString($0)));},  
- 405284: function($0) {resolve_async($0);},  
- 405307: function() {reject_async('failed with unknown exception');},  
- 405358: function($0) {reject_async(new Error(UTF8ToString($0)));},  
- 405405: function($0) {resolve_async($0);},  
- 405428: function() {reject_async('failed with unknown exception');},  
- 405479: function($0) {reject_async(new Error(UTF8ToString($0)));},  
- 405526: function($0) {resolve_async($0);},  
- 405549: function() {reject_async('failed with unknown exception');},  
- 405600: function($0) {reject_async(new Error(UTF8ToString($0)));},  
- 405647: function($0) {resolve_async($0);},  
- 405670: function() {reject_async('failed with unknown exception');},  
- 405721: function($0) {reject_async(new Error(UTF8ToString($0)));},  
- 405768: function($0) {resolve_async($0);},  
- 405791: function() {reject_async('failed with unknown exception');},  
- 405842: function($0) {reject_async(new Error(UTF8ToString($0)));}
+  403860: function($0) {resolve_async(UTF8ToString($0));},  
+ 403897: function() {reject_async(new Error('failed with unknown exception'));},  
+ 403959: function($0) {reject_async(new Error(UTF8ToString($0)));},  
+ 404006: function($0) {resolve_async($0);},  
+ 404029: function() {reject_async('failed with unknown exception');},  
+ 404080: function($0) {reject_async(new Error(UTF8ToString($0)));},  
+ 404127: function($0) {resolve_async($0);},  
+ 404150: function() {reject_async('failed with unknown exception');},  
+ 404201: function($0) {reject_async(new Error(UTF8ToString($0)));},  
+ 404248: function($0) {resolve_async($0);},  
+ 404271: function() {reject_async('failed with unknown exception');},  
+ 404322: function($0) {reject_async(new Error(UTF8ToString($0)));},  
+ 404369: function($0) {resolve_async($0);},  
+ 404392: function() {reject_async('failed with unknown exception');},  
+ 404443: function($0) {reject_async(new Error(UTF8ToString($0)));},  
+ 404490: function($0) {resolve_async($0);},  
+ 404513: function() {reject_async('failed with unknown exception');},  
+ 404564: function($0) {reject_async(new Error(UTF8ToString($0)));},  
+ 404611: function($0) {resolve_async($0);},  
+ 404634: function() {reject_async('failed with unknown exception');},  
+ 404685: function($0) {reject_async(new Error(UTF8ToString($0)));},  
+ 404732: function($0) {resolve_async($0);},  
+ 404755: function() {reject_async('failed with unknown exception');},  
+ 404806: function($0) {reject_async(new Error(UTF8ToString($0)));},  
+ 404853: function($0) {resolve_async($0);},  
+ 404876: function() {reject_async('failed with unknown exception');},  
+ 404927: function($0) {reject_async(new Error(UTF8ToString($0)));},  
+ 404974: function($0) {resolve_async($0);},  
+ 404997: function() {reject_async('failed with unknown exception');},  
+ 405048: function($0) {reject_async(new Error(UTF8ToString($0)));},  
+ 405095: function($0) {resolve_async($0);},  
+ 405118: function() {reject_async('failed with unknown exception');},  
+ 405169: function($0) {reject_async(new Error(UTF8ToString($0)));},  
+ 405216: function($0) {resolve_async($0);},  
+ 405239: function() {reject_async('failed with unknown exception');},  
+ 405290: function($0) {reject_async(new Error(UTF8ToString($0)));},  
+ 405337: function($0) {resolve_async($0);},  
+ 405360: function() {reject_async('failed with unknown exception');},  
+ 405411: function($0) {reject_async(new Error(UTF8ToString($0)));},  
+ 405458: function($0) {resolve_async($0);},  
+ 405481: function() {reject_async('failed with unknown exception');},  
+ 405532: function($0) {reject_async(new Error(UTF8ToString($0)));},  
+ 405579: function($0) {resolve_async($0);},  
+ 405602: function() {reject_async('failed with unknown exception');},  
+ 405653: function($0) {reject_async(new Error(UTF8ToString($0)));},  
+ 405700: function($0) {resolve_async($0);},  
+ 405723: function() {reject_async('failed with unknown exception');},  
+ 405774: function($0) {reject_async(new Error(UTF8ToString($0)));}
 };
 
 
@@ -6364,15 +6447,10 @@ var ASM_CONSTS = {
           continue;
         }
         var func = callback.func;
-        if (typeof func == 'number') {
+        if (typeof func === 'number') {
           if (callback.arg === undefined) {
-            // Run the wasm function ptr with signature 'v'. If no function
-            // with such signature was exported, this call does not need
-            // to be emitted (and would confuse Closure)
             getWasmTableEntry(func)();
           } else {
-            // If any function with signature 'vi' was exported, run
-            // the callback with that signature.
             getWasmTableEntry(func)(callback.arg);
           }
         } else {
@@ -6476,49 +6554,6 @@ var ASM_CONSTS = {
       HEAPU8.fill(0, address, address + size);
     }
   
-  function ptrToString(ptr) {
-      return '0x' + ptr.toString(16).padStart(8, '0');
-    }
-  
-  function spawnThread(threadParams) {
-      assert(!ENVIRONMENT_IS_PTHREAD, 'Internal Error! spawnThread() can only ever be called from main application thread!');
-      assert(threadParams.pthread_ptr, 'Internal error, no pthread ptr!');
-  
-      var worker = PThread.getNewWorker();
-      if (!worker) {
-        // No available workers in the PThread pool.
-        return 6;
-      }
-      assert(!worker.pthread, 'Internal error!');
-  
-      PThread.runningWorkers.push(worker);
-  
-      // Create a pthread info object to represent this thread.
-      var pthread = PThread.pthreads[threadParams.pthread_ptr] = {
-        worker: worker,
-        // Info area for this thread in Emscripten HEAP (shared)
-        threadInfoStruct: threadParams.pthread_ptr
-      };
-  
-      worker.pthread = pthread;
-      var msg = {
-          'cmd': 'run',
-          'start_routine': threadParams.startRoutine,
-          'arg': threadParams.arg,
-          'threadInfoStruct': threadParams.pthread_ptr,
-      };
-      worker.runPthread = () => {
-        // Ask the worker to start executing its pthread entry point function.
-        msg.time = performance.now();
-        worker.postMessage(msg, threadParams.transferList);
-      };
-      if (worker.loaded) {
-        worker.runPthread();
-        delete worker.runPthread;
-      }
-      return 0;
-    }
-  
   function _exit(status) {
       // void _exit(int status);
       // http://pubs.opengroup.org/onlinepubs/000095399/functions/exit.html
@@ -6536,23 +6571,10 @@ var ASM_CONSTS = {
       }
       quit_(1, e);
     }
-  var PThread = {unusedWorkers:[],runningWorkers:[],tlsInitFunctions:[],init:function() {
-        if (ENVIRONMENT_IS_PTHREAD) {
-          PThread.initWorker();
-        } else {
-          PThread.initMainThread();
-        }
-      },initMainThread:function() {
-      },initWorker:function() {
+  var PThread = {unusedWorkers:[],runningWorkers:[],tlsInitFunctions:[],initMainThreadBlock:function() {
+        assert(!ENVIRONMENT_IS_PTHREAD);
   
-        // The default behaviour for pthreads is always to exit once they return
-        // from their entry point (or call pthread_exit).  If we set noExitRuntime
-        // to true here on pthreads they would never complete and attempt to
-        // pthread_join to them would block forever.
-        // pthreads can still choose to set `noExitRuntime` explicitly, or
-        // call emscripten_unwind_to_js_event_loop to extend their lifetime beyond
-        // their main function.  See comment in src/worker.js for more.
-        noExitRuntime = false;
+      },initWorker:function() {
       },pthreads:{},setExitStatus:function(status) {
         EXITSTATUS = status;
       },terminateAllThreads:function() {
@@ -6608,10 +6630,10 @@ var ASM_CONSTS = {
         // Call thread init functions (these are the emscripten_tls_init for each
         // module loaded.
         for (var i in PThread.tlsInitFunctions) {
-          if (PThread.tlsInitFunctions.hasOwnProperty(i)) PThread.tlsInitFunctions[i]();
+          PThread.tlsInitFunctions[i]();
         }
       },loadWasmModuleToWorker:function(worker, onFinishedLoading) {
-        worker.onmessage = (e) => {
+        worker.onmessage = function(e) {
           var d = e['data'];
           var cmd = d['cmd'];
           // Sometimes we need to backproxy events to the calling thread (e.g.
@@ -6632,8 +6654,9 @@ var ASM_CONSTS = {
             return;
           }
   
-          if (cmd === 'processProxyingQueue') {
-            executeNotifiedProxyingQueue(d['queue']);
+          if (cmd === 'processQueuedMainThreadWork') {
+            // TODO: Must post message to main Emscripten thread in PROXY_TO_WORKER mode.
+            _emscripten_main_thread_process_queued_calls();
           } else if (cmd === 'spawnThread') {
             spawnThread(d);
           } else if (cmd === 'cleanupThread') {
@@ -6656,6 +6679,9 @@ var ASM_CONSTS = {
             err('Thread ' + d['threadId'] + ': ' + d['text']);
           } else if (cmd === 'alert') {
             alert('Thread ' + d['threadId'] + ': ' + d['text']);
+          } else if (cmd === 'detachedExit') {
+            assert(worker.pthread);
+            PThread.returnWorkerToPool(worker);
           } else if (d.target === 'setimmediate') {
             // Worker wants to postMessage() to itself to implement setImmediate()
             // emulation.
@@ -6664,24 +6690,14 @@ var ASM_CONSTS = {
             if (Module['onAbort']) {
               Module['onAbort'](d['arg']);
             }
-          } else if (cmd) {
-            // The received message looks like something that should be handled by this message
-            // handler, (since there is a e.data.cmd field present), but is not one of the
-            // recognized commands:
+          } else {
             err("worker sent an unknown command " + cmd);
           }
           PThread.currentProxiedOperationCallerThread = undefined;
         };
   
-        worker.onerror = (e) => {
-          var message = 'worker sent an error!';
-          if (worker.pthread) {
-            var pthread_ptr = worker.pthread.threadInfoStruct;
-            if (pthread_ptr) {
-              message = 'Pthread ' + ptrToString(pthread_ptr) + ' sent an error!';
-            }
-          }
-          err(message + ' ' + e.filename + ':' + e.lineno + ': ' + e.message);
+        worker.onerror = function(e) {
+          err('pthread sent an error! ' + e.filename + ':' + e.lineno + ': ' + e.message);
           throw e;
         };
   
@@ -6783,8 +6799,8 @@ var ASM_CONSTS = {
   function jsStackTrace() {
       var error = new Error();
       if (!error.stack) {
-        // IE10+ special cases: It does have callstack info, but it is only
-        // populated if an Error object is thrown, so try that as a special-case.
+        // IE10+ special cases: It does have callstack info, but it is only populated if an Error object is thrown,
+        // so try that as a special-case.
         try {
           throw new Error();
         } catch(e) {
@@ -6797,16 +6813,13 @@ var ASM_CONSTS = {
       return error.stack.toString();
     }
 
-  function registerTlsInit(tlsInitFunc) {
+  function registerTlsInit(tlsInitFunc, moduleExports, metadata) {
       PThread.tlsInitFunctions.push(tlsInitFunc);
     }
 
   function setWasmTableEntry(idx, func) {
       wasmTable.set(idx, func);
-      // With ABORT_ON_WASM_EXCEPTIONS wasmTable.get is overriden to return wrapped
-      // functions so we need to call it here to retrieve the potential wrapper correctly
-      // instead of just storing 'func' directly into wasmTableMirror
-      wasmTableMirror[idx] = wasmTable.get(idx);
+      wasmTableMirror[idx] = func;
     }
 
   function stackTrace() {
@@ -6823,36 +6836,63 @@ var ASM_CONSTS = {
       getWasmTableEntry(fp)(sig);
     }
 
+  var _emscripten_get_now;if (ENVIRONMENT_IS_NODE) {
+    _emscripten_get_now = () => {
+      var t = process['hrtime']();
+      return t[0] * 1e3 + t[1] / 1e6;
+    };
+  } else if (ENVIRONMENT_IS_PTHREAD) {
+    _emscripten_get_now = () => performance.now() - Module['__performance_now_clock_drift'];
+  } else _emscripten_get_now = () => performance.now();
+  ;
+  
+  var _emscripten_get_now_is_monotonic = true;;
+  
+  function setErrNo(value) {
+      HEAP32[((___errno_location())>>2)] = value;
+      return value;
+    }
+  function _clock_gettime(clk_id, tp) {
+      // int clock_gettime(clockid_t clk_id, struct timespec *tp);
+      var now;
+      if (clk_id === 0) {
+        now = Date.now();
+      } else if ((clk_id === 1 || clk_id === 4) && _emscripten_get_now_is_monotonic) {
+        now = _emscripten_get_now();
+      } else {
+        setErrNo(28);
+        return -1;
+      }
+      HEAP32[((tp)>>2)] = (now/1000)|0; // seconds
+      HEAP32[(((tp)+(4))>>2)] = ((now % 1000)*1000*1000)|0; // nanoseconds
+      return 0;
+    }
+  function ___clock_gettime(a0,a1
+  ) {
+  return _clock_gettime(a0,a1);
+  }
+
   function ___cxa_allocate_exception(size) {
       // Thrown object is prepended by exception metadata block
-      return _malloc(size + 24) + 24;
+      return _malloc(size + 16) + 16;
     }
 
-  var exceptionCaught =  [];
   
-  function exception_addRef(info) {
-      info.add_ref();
-    }
+  function _atexit(func, arg) {
+    if (ENVIRONMENT_IS_PTHREAD)
+      return _emscripten_proxy_to_main_thread_js(2, 1, func, arg);
+    
+    
+  }
   
-  var uncaughtExceptionCount = 0;
-  function ___cxa_begin_catch(ptr) {
-      var info = new ExceptionInfo(ptr);
-      if (!info.get_caught()) {
-        info.set_caught(true);
-        uncaughtExceptionCount--;
-      }
-      info.set_rethrown(false);
-      exceptionCaught.push(info);
-      exception_addRef(info);
-      return info.get_exception_ptr();
-    }
+  function ___cxa_atexit(a0,a1
+  ) {
+  return _atexit(a0,a1);
+  }
 
-  var exceptionLast = 0;
-  
-  /** @constructor */
   function ExceptionInfo(excPtr) {
       this.excPtr = excPtr;
-      this.ptr = excPtr - 24;
+      this.ptr = excPtr - 16;
   
       this.set_type = function(type) {
         HEAP32[(((this.ptr)+(4))>>2)] = type;
@@ -6894,7 +6934,6 @@ var ASM_CONSTS = {
   
       // Initialize native structure fields. Should be called once after allocated.
       this.init = function(type, destructor) {
-        this.set_adjusted_ptr(0);
         this.set_type(type);
         this.set_destructor(destructor);
         this.set_refcount(0);
@@ -6912,13 +6951,32 @@ var ASM_CONSTS = {
         assert(prev > 0);
         return prev === 1;
       };
+    }
+  function CatchInfo(ptr) {
   
-      this.set_adjusted_ptr = function(adjustedPtr) {
-        HEAP32[(((this.ptr)+(16))>>2)] = adjustedPtr;
+      this.free = function() {
+        _free(this.ptr);
+        this.ptr = 0;
       };
   
+      this.set_base_ptr = function(basePtr) {
+        HEAP32[((this.ptr)>>2)] = basePtr;
+      };
+  
+      this.get_base_ptr = function() {
+        return HEAP32[((this.ptr)>>2)];
+      };
+  
+      this.set_adjusted_ptr = function(adjustedPtr) {
+        HEAP32[(((this.ptr)+(4))>>2)] = adjustedPtr;
+      };
+  
+      this.get_adjusted_ptr_addr = function() {
+        return this.ptr + 4;
+      }
+  
       this.get_adjusted_ptr = function() {
-        return HEAP32[(((this.ptr)+(16))>>2)];
+        return HEAP32[(((this.ptr)+(4))>>2)];
       };
   
       // Get pointer which is expected to be received by catch clause in C++ code. It may be adjusted
@@ -6928,20 +6986,55 @@ var ASM_CONSTS = {
       this.get_exception_ptr = function() {
         // Work around a fastcomp bug, this code is still included for some reason in a build without
         // exceptions support.
-        var isPointer = ___cxa_is_pointer_type(this.get_type());
+        var isPointer = ___cxa_is_pointer_type(
+          this.get_exception_info().get_type());
         if (isPointer) {
-          return HEAP32[((this.excPtr)>>2)];
+          return HEAP32[((this.get_base_ptr())>>2)];
         }
         var adjusted = this.get_adjusted_ptr();
         if (adjusted !== 0) return adjusted;
-        return this.excPtr;
+        return this.get_base_ptr();
       };
+  
+      this.get_exception_info = function() {
+        return new ExceptionInfo(this.get_base_ptr());
+      };
+  
+      if (ptr === undefined) {
+        this.ptr = _malloc(8);
+        this.set_adjusted_ptr(0);
+      } else {
+        this.ptr = ptr;
+      }
     }
+  
+  var exceptionCaught =  [];
+  
+  function exception_addRef(info) {
+      info.add_ref();
+    }
+  
+  var uncaughtExceptionCount = 0;
+  function ___cxa_begin_catch(ptr) {
+      var catchInfo = new CatchInfo(ptr);
+      var info = catchInfo.get_exception_info();
+      if (!info.get_caught()) {
+        info.set_caught(true);
+        uncaughtExceptionCount--;
+      }
+      info.set_rethrown(false);
+      exceptionCaught.push(catchInfo);
+      exception_addRef(info);
+      return catchInfo.get_exception_ptr();
+    }
+
+  var exceptionLast = 0;
+  
   function ___cxa_free_exception(ptr) {
       try {
         return _free(new ExceptionInfo(ptr).ptr);
       } catch(e) {
-        err('exception during __cxa_free_exception: ' + e);
+        err('exception during cxa_free_exception: ' + e);
       }
     }
   function exception_decRef(info) {
@@ -6962,14 +7055,18 @@ var ASM_CONSTS = {
       _setThrew(0);
       assert(exceptionCaught.length > 0);
       // Call destructor if one is registered then clear it.
-      var info = exceptionCaught.pop();
+      var catchInfo = exceptionCaught.pop();
   
-      exception_decRef(info);
+      exception_decRef(catchInfo.get_exception_info());
+      catchInfo.free();
       exceptionLast = 0; // XXX in decRef?
     }
 
-  function ___resumeException(ptr) {
+  function ___resumeException(catchInfoPtr) {
+      var catchInfo = new CatchInfo(catchInfoPtr);
+      var ptr = catchInfo.get_base_ptr();
       if (!exceptionLast) { exceptionLast = ptr; }
+      catchInfo.free();
       throw ptr;
     }
   function ___cxa_find_matching_catch_2() {
@@ -6979,11 +7076,13 @@ var ASM_CONSTS = {
         setTempRet0(0); return ((0)|0);
       }
       var info = new ExceptionInfo(thrown);
-      info.set_adjusted_ptr(thrown);
       var thrownType = info.get_type();
+      var catchInfo = new CatchInfo();
+      catchInfo.set_base_ptr(thrown);
+      catchInfo.set_adjusted_ptr(thrown);
       if (!thrownType) {
         // just pass through the thrown ptr
-        setTempRet0(0); return ((thrown)|0);
+        setTempRet0(0); return ((catchInfo.ptr)|0);
       }
       var typeArray = Array.prototype.slice.call(arguments);
   
@@ -6998,12 +7097,11 @@ var ASM_CONSTS = {
           // Catch all clause matched or exactly the same type is caught
           break;
         }
-        var adjusted_ptr_addr = info.ptr + 16;
-        if (___cxa_can_catch(caughtType, thrownType, adjusted_ptr_addr)) {
-          setTempRet0(caughtType); return ((thrown)|0);
+        if (___cxa_can_catch(caughtType, thrownType, catchInfo.get_adjusted_ptr_addr())) {
+          setTempRet0(caughtType); return ((catchInfo.ptr)|0);
         }
       }
-      setTempRet0(thrownType); return ((thrown)|0);
+      setTempRet0(thrownType); return ((catchInfo.ptr)|0);
     }
 
   function ___cxa_find_matching_catch_3() {
@@ -7013,11 +7111,13 @@ var ASM_CONSTS = {
         setTempRet0(0); return ((0)|0);
       }
       var info = new ExceptionInfo(thrown);
-      info.set_adjusted_ptr(thrown);
       var thrownType = info.get_type();
+      var catchInfo = new CatchInfo();
+      catchInfo.set_base_ptr(thrown);
+      catchInfo.set_adjusted_ptr(thrown);
       if (!thrownType) {
         // just pass through the thrown ptr
-        setTempRet0(0); return ((thrown)|0);
+        setTempRet0(0); return ((catchInfo.ptr)|0);
       }
       var typeArray = Array.prototype.slice.call(arguments);
   
@@ -7032,12 +7132,11 @@ var ASM_CONSTS = {
           // Catch all clause matched or exactly the same type is caught
           break;
         }
-        var adjusted_ptr_addr = info.ptr + 16;
-        if (___cxa_can_catch(caughtType, thrownType, adjusted_ptr_addr)) {
-          setTempRet0(caughtType); return ((thrown)|0);
+        if (___cxa_can_catch(caughtType, thrownType, catchInfo.get_adjusted_ptr_addr())) {
+          setTempRet0(caughtType); return ((catchInfo.ptr)|0);
         }
       }
-      setTempRet0(thrownType); return ((thrown)|0);
+      setTempRet0(thrownType); return ((catchInfo.ptr)|0);
     }
 
   function ___cxa_find_matching_catch_4() {
@@ -7047,11 +7146,13 @@ var ASM_CONSTS = {
         setTempRet0(0); return ((0)|0);
       }
       var info = new ExceptionInfo(thrown);
-      info.set_adjusted_ptr(thrown);
       var thrownType = info.get_type();
+      var catchInfo = new CatchInfo();
+      catchInfo.set_base_ptr(thrown);
+      catchInfo.set_adjusted_ptr(thrown);
       if (!thrownType) {
         // just pass through the thrown ptr
-        setTempRet0(0); return ((thrown)|0);
+        setTempRet0(0); return ((catchInfo.ptr)|0);
       }
       var typeArray = Array.prototype.slice.call(arguments);
   
@@ -7066,12 +7167,11 @@ var ASM_CONSTS = {
           // Catch all clause matched or exactly the same type is caught
           break;
         }
-        var adjusted_ptr_addr = info.ptr + 16;
-        if (___cxa_can_catch(caughtType, thrownType, adjusted_ptr_addr)) {
-          setTempRet0(caughtType); return ((thrown)|0);
+        if (___cxa_can_catch(caughtType, thrownType, catchInfo.get_adjusted_ptr_addr())) {
+          setTempRet0(caughtType); return ((catchInfo.ptr)|0);
         }
       }
-      setTempRet0(thrownType); return ((thrown)|0);
+      setTempRet0(thrownType); return ((catchInfo.ptr)|0);
     }
 
   function ___cxa_find_matching_catch_7() {
@@ -7081,11 +7181,13 @@ var ASM_CONSTS = {
         setTempRet0(0); return ((0)|0);
       }
       var info = new ExceptionInfo(thrown);
-      info.set_adjusted_ptr(thrown);
       var thrownType = info.get_type();
+      var catchInfo = new CatchInfo();
+      catchInfo.set_base_ptr(thrown);
+      catchInfo.set_adjusted_ptr(thrown);
       if (!thrownType) {
         // just pass through the thrown ptr
-        setTempRet0(0); return ((thrown)|0);
+        setTempRet0(0); return ((catchInfo.ptr)|0);
       }
       var typeArray = Array.prototype.slice.call(arguments);
   
@@ -7100,12 +7202,11 @@ var ASM_CONSTS = {
           // Catch all clause matched or exactly the same type is caught
           break;
         }
-        var adjusted_ptr_addr = info.ptr + 16;
-        if (___cxa_can_catch(caughtType, thrownType, adjusted_ptr_addr)) {
-          setTempRet0(caughtType); return ((thrown)|0);
+        if (___cxa_can_catch(caughtType, thrownType, catchInfo.get_adjusted_ptr_addr())) {
+          setTempRet0(caughtType); return ((catchInfo.ptr)|0);
         }
       }
-      setTempRet0(thrownType); return ((thrown)|0);
+      setTempRet0(thrownType); return ((catchInfo.ptr)|0);
     }
 
   function ___cxa_find_matching_catch_8() {
@@ -7115,11 +7216,13 @@ var ASM_CONSTS = {
         setTempRet0(0); return ((0)|0);
       }
       var info = new ExceptionInfo(thrown);
-      info.set_adjusted_ptr(thrown);
       var thrownType = info.get_type();
+      var catchInfo = new CatchInfo();
+      catchInfo.set_base_ptr(thrown);
+      catchInfo.set_adjusted_ptr(thrown);
       if (!thrownType) {
         // just pass through the thrown ptr
-        setTempRet0(0); return ((thrown)|0);
+        setTempRet0(0); return ((catchInfo.ptr)|0);
       }
       var typeArray = Array.prototype.slice.call(arguments);
   
@@ -7134,27 +7237,29 @@ var ASM_CONSTS = {
           // Catch all clause matched or exactly the same type is caught
           break;
         }
-        var adjusted_ptr_addr = info.ptr + 16;
-        if (___cxa_can_catch(caughtType, thrownType, adjusted_ptr_addr)) {
-          setTempRet0(caughtType); return ((thrown)|0);
+        if (___cxa_can_catch(caughtType, thrownType, catchInfo.get_adjusted_ptr_addr())) {
+          setTempRet0(caughtType); return ((catchInfo.ptr)|0);
         }
       }
-      setTempRet0(thrownType); return ((thrown)|0);
+      setTempRet0(thrownType); return ((catchInfo.ptr)|0);
     }
 
 
   function ___cxa_rethrow() {
-      var info = exceptionCaught.pop();
-      if (!info) {
+      var catchInfo = exceptionCaught.pop();
+      if (!catchInfo) {
         abort('no exception to throw');
       }
-      var ptr = info.excPtr;
+      var info = catchInfo.get_exception_info();
+      var ptr = catchInfo.get_base_ptr();
       if (!info.get_rethrown()) {
         // Only pop if the corresponding push was through rethrow_primary_exception
-        exceptionCaught.push(info);
+        exceptionCaught.push(catchInfo);
         info.set_rethrown(true);
         info.set_caught(false);
         uncaughtExceptionCount++;
+      } else {
+        catchInfo.free();
       }
       exceptionLast = ptr;
       throw ptr;
@@ -7174,40 +7279,62 @@ var ASM_CONSTS = {
     }
 
   function ___emscripten_init_main_thread_js(tb) {
+  
       // Pass the thread address to the native code where they stored in wasm
       // globals which act as a form of TLS. Global constructors trying
       // to access this value will read the wrong value, but that is UB anyway.
-      __emscripten_thread_init(
-        tb,
-        /*isMainBrowserThread=*/!ENVIRONMENT_IS_WORKER,
-        /*isMainRuntimeThread=*/1,
-        /*canBlock=*/!ENVIRONMENT_IS_WEB,
-      );
+      __emscripten_thread_init(tb, /*isMainBrowserThread=*/!ENVIRONMENT_IS_WORKER, /*isMainRuntimeThread=*/1, /*canBlock=*/!ENVIRONMENT_IS_WEB);
       PThread.mainRuntimeThread = true;
+      // Verify that this native symbol used by futex_wait/wake is exported correctly.
+      assert(__emscripten_main_thread_futex > 0);
       PThread.threadInit();
     }
 
   function ___emscripten_thread_cleanup(thread) {
-      // Called when a thread needs to be cleaned up so it can be reused.
-      // A thread is considered reusable when it either returns from its
-      // entry point, calls pthread_exit, or acts upon a cancellation.
-      // Detached threads are responsible for calling this themselves,
-      // otherwise pthread_join is responsible for calling this.
       if (!ENVIRONMENT_IS_PTHREAD) cleanupThread(thread);
       else postMessage({ 'cmd': 'cleanupThread', 'thread': thread });
     }
 
+  function spawnThread(threadParams) {
+      assert(!ENVIRONMENT_IS_PTHREAD, 'Internal Error! spawnThread() can only ever be called from main application thread!');
+      assert(threadParams.pthread_ptr, 'Internal error, no pthread ptr!');
   
-  function pthreadCreateProxied(pthread_ptr, attr, start_routine, arg) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(2, 1, pthread_ptr, attr, start_routine, arg);
-    
-      return ___pthread_create_js(pthread_ptr, attr, start_routine, arg);
-    
-  }
+      var worker = PThread.getNewWorker();
+      if (!worker) {
+        // No available workers in the PThread pool.
+        return 6;
+      }
+      assert(!worker.pthread, 'Internal error!');
   
+      PThread.runningWorkers.push(worker);
+  
+      // Create a pthread info object to represent this thread.
+      var pthread = PThread.pthreads[threadParams.pthread_ptr] = {
+        worker: worker,
+        // Info area for this thread in Emscripten HEAP (shared)
+        threadInfoStruct: threadParams.pthread_ptr
+      };
+  
+      worker.pthread = pthread;
+      var msg = {
+          'cmd': 'run',
+          'start_routine': threadParams.startRoutine,
+          'arg': threadParams.arg,
+          'threadInfoStruct': threadParams.pthread_ptr,
+      };
+      worker.runPthread = function() {
+        // Ask the worker to start executing its pthread entry point function.
+        msg.time = performance.now();
+        worker.postMessage(msg, threadParams.transferList);
+      };
+      if (worker.loaded) {
+        worker.runPthread();
+        delete worker.runPthread;
+      }
+      return 0;
+    }
   function ___pthread_create_js(pthread_ptr, attr, start_routine, arg) {
-      if (typeof SharedArrayBuffer == 'undefined') {
+      if (typeof SharedArrayBuffer === 'undefined') {
         err('Current environment does not support SharedArrayBuffer, pthreads are not available!');
         return 6;
       }
@@ -7220,7 +7347,7 @@ var ASM_CONSTS = {
       // need to transfer ownership of objects, then proxy asynchronously via
       // postMessage.
       if (ENVIRONMENT_IS_PTHREAD && (transferList.length === 0 || error)) {
-        return pthreadCreateProxied(pthread_ptr, attr, start_routine, arg);
+        return _emscripten_sync_run_in_main_thread_4(687865856, pthread_ptr, attr, start_routine, arg);
       }
   
       // If on the main thread, and accessing Canvas/OffscreenCanvas failed, abort
@@ -7250,16 +7377,17 @@ var ASM_CONSTS = {
       return spawnThread(threadParams);
     }
 
-
-  function setErrNo(value) {
-      HEAP32[((___errno_location())>>2)] = value;
-      return value;
+  function ___pthread_detached_exit() {
+      // Called at the end of pthread_exit (which occurs also when leaving the
+      // thread main function) if an only if the thread is in a detached state.
+      postMessage({ 'cmd': 'detachedExit' });
     }
-  
-  var PATH = {isAbs:(path) => path.charAt(0) === '/',splitPath:(filename) => {
+
+
+  var PATH = {splitPath:function(filename) {
         var splitPathRe = /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
         return splitPathRe.exec(filename).slice(1);
-      },normalizeArray:(parts, allowAboveRoot) => {
+      },normalizeArray:function(parts, allowAboveRoot) {
         // if the path tries to go above the root, `up` ends up > 0
         var up = 0;
         for (var i = parts.length - 1; i >= 0; i--) {
@@ -7281,11 +7409,13 @@ var ASM_CONSTS = {
           }
         }
         return parts;
-      },normalize:(path) => {
-        var isAbsolute = PATH.isAbs(path),
+      },normalize:function(path) {
+        var isAbsolute = path.charAt(0) === '/',
             trailingSlash = path.substr(-1) === '/';
         // Normalize the path
-        path = PATH.normalizeArray(path.split('/').filter((p) => !!p), !isAbsolute).join('/');
+        path = PATH.normalizeArray(path.split('/').filter(function(p) {
+          return !!p;
+        }), !isAbsolute).join('/');
         if (!path && !isAbsolute) {
           path = '.';
         }
@@ -7293,7 +7423,7 @@ var ASM_CONSTS = {
           path += '/';
         }
         return (isAbsolute ? '/' : '') + path;
-      },dirname:(path) => {
+      },dirname:function(path) {
         var result = PATH.splitPath(path),
             root = result[0],
             dir = result[1];
@@ -7306,7 +7436,7 @@ var ASM_CONSTS = {
           dir = dir.substr(0, dir.length - 1);
         }
         return root + dir;
-      },basename:(path) => {
+      },basename:function(path) {
         // EMSCRIPTEN return '/'' for '/', not an empty string
         if (path === '/') return '/';
         path = PATH.normalize(path);
@@ -7314,15 +7444,17 @@ var ASM_CONSTS = {
         var lastSlash = path.lastIndexOf('/');
         if (lastSlash === -1) return path;
         return path.substr(lastSlash+1);
+      },extname:function(path) {
+        return PATH.splitPath(path)[3];
       },join:function() {
         var paths = Array.prototype.slice.call(arguments, 0);
         return PATH.normalize(paths.join('/'));
-      },join2:(l, r) => {
+      },join2:function(l, r) {
         return PATH.normalize(l + '/' + r);
       }};
   
   function getRandomDevice() {
-      if (typeof crypto == 'object' && typeof crypto['getRandomValues'] == 'function') {
+      if (typeof crypto === 'object' && typeof crypto['getRandomValues'] === 'function') {
         // for modern web browsers
         var randomBuffer = new Uint8Array(1);
         return function() { crypto.getRandomValues(randomBuffer); return randomBuffer[0]; };
@@ -7347,19 +7479,21 @@ var ASM_CONSTS = {
         for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
           var path = (i >= 0) ? arguments[i] : FS.cwd();
           // Skip empty and invalid entries
-          if (typeof path != 'string') {
+          if (typeof path !== 'string') {
             throw new TypeError('Arguments to path.resolve must be strings');
           } else if (!path) {
             return ''; // an invalid portion invalidates the whole thing
           }
           resolvedPath = path + '/' + resolvedPath;
-          resolvedAbsolute = PATH.isAbs(path);
+          resolvedAbsolute = path.charAt(0) === '/';
         }
         // At this point the path should be resolved to a full absolute path, but
         // handle relative paths to be safe (might happen when process.cwd() fails)
-        resolvedPath = PATH.normalizeArray(resolvedPath.split('/').filter((p) => !!p), !resolvedAbsolute).join('/');
+        resolvedPath = PATH.normalizeArray(resolvedPath.split('/').filter(function(p) {
+          return !!p;
+        }), !resolvedAbsolute).join('/');
         return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
-      },relative:(from, to) => {
+      },relative:function(from, to) {
         from = PATH_FS.resolve(from).substr(1);
         to = PATH_FS.resolve(to).substr(1);
         function trim(arr) {
@@ -7474,7 +7608,7 @@ var ASM_CONSTS = {
               var bytesRead = 0;
   
               try {
-                bytesRead = fs.readSync(process.stdin.fd, buf, 0, BUFSIZE, -1);
+                bytesRead = fs.readSync(process.stdin.fd, buf, 0, BUFSIZE, null);
               } catch(e) {
                 // Cross-platform differences: on Windows, reading EOF throws an exception, but on other OSes,
                 // reading EOF returns 0. Uniformize behavior by treating the EOF exception to return 0.
@@ -7540,7 +7674,7 @@ var ASM_CONSTS = {
     }
   function mmapAlloc(size) {
       size = alignMemory(size, 65536);
-      var ptr = _emscripten_builtin_memalign(65536, size);
+      var ptr = _memalign(65536, size);
       if (!ptr) return 0;
       zeroMemory(ptr, size);
       return ptr;
@@ -7858,7 +7992,6 @@ var ASM_CONSTS = {
           return 0;
         }}};
   
-  /** @param {boolean=} noRunDep */
   function asyncLoad(url, onload, onerror, noRunDep) {
       var dep = !noRunDep ? getUniqueRunDependency('al ' + url) : '';
       readAsync(url, function(arrayBuffer) {
@@ -7878,8 +8011,9 @@ var ASM_CONSTS = {
   var ERRNO_MESSAGES = {0:"Success",1:"Arg list too long",2:"Permission denied",3:"Address already in use",4:"Address not available",5:"Address family not supported by protocol family",6:"No more processes",7:"Socket already connected",8:"Bad file number",9:"Trying to read unreadable message",10:"Mount device busy",11:"Operation canceled",12:"No children",13:"Connection aborted",14:"Connection refused",15:"Connection reset by peer",16:"File locking deadlock error",17:"Destination address required",18:"Math arg out of domain of func",19:"Quota exceeded",20:"File exists",21:"Bad address",22:"File too large",23:"Host is unreachable",24:"Identifier removed",25:"Illegal byte sequence",26:"Connection already in progress",27:"Interrupted system call",28:"Invalid argument",29:"I/O error",30:"Socket is already connected",31:"Is a directory",32:"Too many symbolic links",33:"Too many open files",34:"Too many links",35:"Message too long",36:"Multihop attempted",37:"File or path name too long",38:"Network interface is not configured",39:"Connection reset by network",40:"Network is unreachable",41:"Too many open files in system",42:"No buffer space available",43:"No such device",44:"No such file or directory",45:"Exec format error",46:"No record locks available",47:"The link has been severed",48:"Not enough core",49:"No message of desired type",50:"Protocol not available",51:"No space left on device",52:"Function not implemented",53:"Socket is not connected",54:"Not a directory",55:"Directory not empty",56:"State not recoverable",57:"Socket operation on non-socket",59:"Not a typewriter",60:"No such device or address",61:"Value too large for defined data type",62:"Previous owner died",63:"Not super-user",64:"Broken pipe",65:"Protocol error",66:"Unknown protocol",67:"Protocol wrong type for socket",68:"Math result not representable",69:"Read only file system",70:"Illegal seek",71:"No such process",72:"Stale file handle",73:"Connection timed out",74:"Text file busy",75:"Cross-device link",100:"Device not a stream",101:"Bad font file fmt",102:"Invalid slot",103:"Invalid request code",104:"No anode",105:"Block device required",106:"Channel number out of range",107:"Level 3 halted",108:"Level 3 reset",109:"Link number out of range",110:"Protocol driver not attached",111:"No CSI structure available",112:"Level 2 halted",113:"Invalid exchange",114:"Invalid request descriptor",115:"Exchange full",116:"No data (for no delay io)",117:"Timer expired",118:"Out of streams resources",119:"Machine is not on the network",120:"Package not installed",121:"The object is remote",122:"Advertise error",123:"Srmount error",124:"Communication error on send",125:"Cross mount point (not really error)",126:"Given log. name not unique",127:"f.d. invalid for this operation",128:"Remote address changed",129:"Can   access a needed shared lib",130:"Accessing a corrupted shared lib",131:".lib section in a.out corrupted",132:"Attempting to link in too many libs",133:"Attempting to exec a shared library",135:"Streams pipe error",136:"Too many users",137:"Socket type not supported",138:"Not supported",139:"Protocol family not supported",140:"Can't send after socket shutdown",141:"Too many references",142:"Host is down",148:"No medium (in tape drive)",156:"Level 2 not synchronized"};
   
   var ERRNO_CODES = {};
-  var FS = {root:null,mounts:[],devices:{},streams:[],nextInode:1,nameTable:null,currentPath:"/",initialized:false,ignorePermissions:true,ErrnoError:null,genericErrors:{},filesystems:null,syncFSRequests:0,lookupPath:(path, opts = {}) => {
+  var FS = {root:null,mounts:[],devices:{},streams:[],nextInode:1,nameTable:null,currentPath:"/",initialized:false,ignorePermissions:true,ErrnoError:null,genericErrors:{},filesystems:null,syncFSRequests:0,lookupPath:function(path, opts) {
         path = PATH_FS.resolve(FS.cwd(), path);
+        opts = opts || {};
   
         if (!path) return { path: '', node: null };
   
@@ -7887,14 +8021,20 @@ var ASM_CONSTS = {
           follow_mount: true,
           recurse_count: 0
         };
-        opts = Object.assign(defaults, opts)
+        for (var key in defaults) {
+          if (opts[key] === undefined) {
+            opts[key] = defaults[key];
+          }
+        }
   
         if (opts.recurse_count > 8) {  // max recursive lookup of 8
           throw new FS.ErrnoError(32);
         }
   
         // split the path
-        var parts = PATH.normalizeArray(path.split('/').filter((p) => !!p), false);
+        var parts = PATH.normalizeArray(path.split('/').filter(function(p) {
+          return !!p;
+        }), false);
   
         // start at the root
         var current = FS.root;
@@ -7925,7 +8065,7 @@ var ASM_CONSTS = {
               var link = FS.readlink(current_path);
               current_path = PATH_FS.resolve(PATH.dirname(current_path), link);
   
-              var lookup = FS.lookupPath(current_path, { recurse_count: opts.recurse_count + 1 });
+              var lookup = FS.lookupPath(current_path, { recurse_count: opts.recurse_count });
               current = lookup.node;
   
               if (count++ > 40) {  // limit max consecutive symlinks to 40 (SYMLOOP_MAX).
@@ -7936,7 +8076,7 @@ var ASM_CONSTS = {
         }
   
         return { path: current_path, node: current };
-      },getPath:(node) => {
+      },getPath:function(node) {
         var path;
         while (true) {
           if (FS.isRoot(node)) {
@@ -7947,18 +8087,18 @@ var ASM_CONSTS = {
           path = path ? node.name + '/' + path : node.name;
           node = node.parent;
         }
-      },hashName:(parentid, name) => {
+      },hashName:function(parentid, name) {
         var hash = 0;
   
         for (var i = 0; i < name.length; i++) {
           hash = ((hash << 5) - hash + name.charCodeAt(i)) | 0;
         }
         return ((parentid + hash) >>> 0) % FS.nameTable.length;
-      },hashAddNode:(node) => {
+      },hashAddNode:function(node) {
         var hash = FS.hashName(node.parent.id, node.name);
         node.name_next = FS.nameTable[hash];
         FS.nameTable[hash] = node;
-      },hashRemoveNode:(node) => {
+      },hashRemoveNode:function(node) {
         var hash = FS.hashName(node.parent.id, node.name);
         if (FS.nameTable[hash] === node) {
           FS.nameTable[hash] = node.name_next;
@@ -7972,7 +8112,7 @@ var ASM_CONSTS = {
             current = current.name_next;
           }
         }
-      },lookupNode:(parent, name) => {
+      },lookupNode:function(parent, name) {
         var errCode = FS.mayLookup(parent);
         if (errCode) {
           throw new FS.ErrnoError(errCode, parent);
@@ -7986,46 +8126,46 @@ var ASM_CONSTS = {
         }
         // if we failed to find it in the cache, call into the VFS
         return FS.lookup(parent, name);
-      },createNode:(parent, name, mode, rdev) => {
-        assert(typeof parent == 'object')
+      },createNode:function(parent, name, mode, rdev) {
+        assert(typeof parent === 'object')
         var node = new FS.FSNode(parent, name, mode, rdev);
   
         FS.hashAddNode(node);
   
         return node;
-      },destroyNode:(node) => {
+      },destroyNode:function(node) {
         FS.hashRemoveNode(node);
-      },isRoot:(node) => {
+      },isRoot:function(node) {
         return node === node.parent;
-      },isMountpoint:(node) => {
+      },isMountpoint:function(node) {
         return !!node.mounted;
-      },isFile:(mode) => {
+      },isFile:function(mode) {
         return (mode & 61440) === 32768;
-      },isDir:(mode) => {
+      },isDir:function(mode) {
         return (mode & 61440) === 16384;
-      },isLink:(mode) => {
+      },isLink:function(mode) {
         return (mode & 61440) === 40960;
-      },isChrdev:(mode) => {
+      },isChrdev:function(mode) {
         return (mode & 61440) === 8192;
-      },isBlkdev:(mode) => {
+      },isBlkdev:function(mode) {
         return (mode & 61440) === 24576;
-      },isFIFO:(mode) => {
+      },isFIFO:function(mode) {
         return (mode & 61440) === 4096;
-      },isSocket:(mode) => {
+      },isSocket:function(mode) {
         return (mode & 49152) === 49152;
-      },flagModes:{"r":0,"r+":2,"w":577,"w+":578,"a":1089,"a+":1090},modeStringToFlags:(str) => {
+      },flagModes:{"r":0,"r+":2,"w":577,"w+":578,"a":1089,"a+":1090},modeStringToFlags:function(str) {
         var flags = FS.flagModes[str];
-        if (typeof flags == 'undefined') {
+        if (typeof flags === 'undefined') {
           throw new Error('Unknown file open mode: ' + str);
         }
         return flags;
-      },flagsToPermissionString:(flag) => {
+      },flagsToPermissionString:function(flag) {
         var perms = ['r', 'w', 'rw'][flag & 3];
         if ((flag & 512)) {
           perms += 'w';
         }
         return perms;
-      },nodePermissions:(node, perms) => {
+      },nodePermissions:function(node, perms) {
         if (FS.ignorePermissions) {
           return 0;
         }
@@ -8038,19 +8178,19 @@ var ASM_CONSTS = {
           return 2;
         }
         return 0;
-      },mayLookup:(dir) => {
+      },mayLookup:function(dir) {
         var errCode = FS.nodePermissions(dir, 'x');
         if (errCode) return errCode;
         if (!dir.node_ops.lookup) return 2;
         return 0;
-      },mayCreate:(dir, name) => {
+      },mayCreate:function(dir, name) {
         try {
           var node = FS.lookupNode(dir, name);
           return 20;
         } catch (e) {
         }
         return FS.nodePermissions(dir, 'wx');
-      },mayDelete:(dir, name, isdir) => {
+      },mayDelete:function(dir, name, isdir) {
         var node;
         try {
           node = FS.lookupNode(dir, name);
@@ -8074,7 +8214,7 @@ var ASM_CONSTS = {
           }
         }
         return 0;
-      },mayOpen:(node, flags) => {
+      },mayOpen:function(node, flags) {
         if (!node) {
           return 44;
         }
@@ -8087,18 +8227,20 @@ var ASM_CONSTS = {
           }
         }
         return FS.nodePermissions(node, FS.flagsToPermissionString(flags));
-      },MAX_OPEN_FDS:4096,nextfd:(fd_start = 0, fd_end = FS.MAX_OPEN_FDS) => {
+      },MAX_OPEN_FDS:4096,nextfd:function(fd_start, fd_end) {
+        fd_start = fd_start || 0;
+        fd_end = fd_end || FS.MAX_OPEN_FDS;
         for (var fd = fd_start; fd <= fd_end; fd++) {
           if (!FS.streams[fd]) {
             return fd;
           }
         }
         throw new FS.ErrnoError(33);
-      },getStream:(fd) => FS.streams[fd],createStream:(stream, fd_start, fd_end) => {
+      },getStream:function(fd) {
+        return FS.streams[fd];
+      },createStream:function(stream, fd_start, fd_end) {
         if (!FS.FSStream) {
-          FS.FSStream = /** @constructor */ function() {
-            this.shared = { };
-          };
+          FS.FSStream = /** @constructor */ function(){};
           FS.FSStream.prototype = {
             object: {
               get: function() { return this.node; },
@@ -8112,26 +8254,22 @@ var ASM_CONSTS = {
             },
             isAppend: {
               get: function() { return (this.flags & 1024); }
-            },
-            flags: {
-              get: function() { return this.shared.flags; },
-              set: function(val) { this.shared.flags = val; },
-            },
-            position : {
-              get function() { return this.shared.position; },
-              set: function(val) { this.shared.position = val; },
-            },
+            }
           };
         }
         // clone it, so we can return an instance of FSStream
-        stream = Object.assign(new FS.FSStream(), stream);
+        var newStream = new FS.FSStream();
+        for (var p in stream) {
+          newStream[p] = stream[p];
+        }
+        stream = newStream;
         var fd = FS.nextfd(fd_start, fd_end);
         stream.fd = fd;
         FS.streams[fd] = stream;
         return stream;
-      },closeStream:(fd) => {
+      },closeStream:function(fd) {
         FS.streams[fd] = null;
-      },chrdev_stream_ops:{open:(stream) => {
+      },chrdev_stream_ops:{open:function(stream) {
           var device = FS.getDevice(stream.node.rdev);
           // override node's stream ops with the device's
           stream.stream_ops = device.stream_ops;
@@ -8139,11 +8277,19 @@ var ASM_CONSTS = {
           if (stream.stream_ops.open) {
             stream.stream_ops.open(stream);
           }
-        },llseek:() => {
+        },llseek:function() {
           throw new FS.ErrnoError(70);
-        }},major:(dev) => ((dev) >> 8),minor:(dev) => ((dev) & 0xff),makedev:(ma, mi) => ((ma) << 8 | (mi)),registerDevice:(dev, ops) => {
+        }},major:function(dev) {
+        return ((dev) >> 8);
+      },minor:function(dev) {
+        return ((dev) & 0xff);
+      },makedev:function(ma, mi) {
+        return ((ma) << 8 | (mi));
+      },registerDevice:function(dev, ops) {
         FS.devices[dev] = { stream_ops: ops };
-      },getDevice:(dev) => FS.devices[dev],getMounts:(mount) => {
+      },getDevice:function(dev) {
+        return FS.devices[dev];
+      },getMounts:function(mount) {
         var mounts = [];
         var check = [mount];
   
@@ -8156,8 +8302,8 @@ var ASM_CONSTS = {
         }
   
         return mounts;
-      },syncfs:(populate, callback) => {
-        if (typeof populate == 'function') {
+      },syncfs:function(populate, callback) {
+        if (typeof(populate) === 'function') {
           callback = populate;
           populate = false;
         }
@@ -8191,14 +8337,14 @@ var ASM_CONSTS = {
         };
   
         // sync all mounts
-        mounts.forEach((mount) => {
+        mounts.forEach(function (mount) {
           if (!mount.type.syncfs) {
             return done(null);
           }
           mount.type.syncfs(mount, populate, done);
         });
-      },mount:(type, opts, mountpoint) => {
-        if (typeof type == 'string') {
+      },mount:function(type, opts, mountpoint) {
+        if (typeof type === 'string') {
           // The filesystem was not included, and instead we have an error
           // message stored in the variable.
           throw type;
@@ -8249,7 +8395,7 @@ var ASM_CONSTS = {
         }
   
         return mountRoot;
-      },unmount:(mountpoint) => {
+      },unmount:function (mountpoint) {
         var lookup = FS.lookupPath(mountpoint, { follow_mount: false });
   
         if (!FS.isMountpoint(lookup.node)) {
@@ -8261,7 +8407,7 @@ var ASM_CONSTS = {
         var mount = node.mounted;
         var mounts = FS.getMounts(mount);
   
-        Object.keys(FS.nameTable).forEach((hash) => {
+        Object.keys(FS.nameTable).forEach(function (hash) {
           var current = FS.nameTable[hash];
   
           while (current) {
@@ -8282,9 +8428,9 @@ var ASM_CONSTS = {
         var idx = node.mount.mounts.indexOf(mount);
         assert(idx !== -1);
         node.mount.mounts.splice(idx, 1);
-      },lookup:(parent, name) => {
+      },lookup:function(parent, name) {
         return parent.node_ops.lookup(parent, name);
-      },mknod:(path, mode, dev) => {
+      },mknod:function(path, mode, dev) {
         var lookup = FS.lookupPath(path, { parent: true });
         var parent = lookup.node;
         var name = PATH.basename(path);
@@ -8299,17 +8445,17 @@ var ASM_CONSTS = {
           throw new FS.ErrnoError(63);
         }
         return parent.node_ops.mknod(parent, name, mode, dev);
-      },create:(path, mode) => {
+      },create:function(path, mode) {
         mode = mode !== undefined ? mode : 438 /* 0666 */;
         mode &= 4095;
         mode |= 32768;
         return FS.mknod(path, mode, 0);
-      },mkdir:(path, mode) => {
+      },mkdir:function(path, mode) {
         mode = mode !== undefined ? mode : 511 /* 0777 */;
         mode &= 511 | 512;
         mode |= 16384;
         return FS.mknod(path, mode, 0);
-      },mkdirTree:(path, mode) => {
+      },mkdirTree:function(path, mode) {
         var dirs = path.split('/');
         var d = '';
         for (var i = 0; i < dirs.length; ++i) {
@@ -8321,14 +8467,14 @@ var ASM_CONSTS = {
             if (e.errno != 20) throw e;
           }
         }
-      },mkdev:(path, mode, dev) => {
-        if (typeof dev == 'undefined') {
+      },mkdev:function(path, mode, dev) {
+        if (typeof(dev) === 'undefined') {
           dev = mode;
           mode = 438 /* 0666 */;
         }
         mode |= 8192;
         return FS.mknod(path, mode, dev);
-      },symlink:(oldpath, newpath) => {
+      },symlink:function(oldpath, newpath) {
         if (!PATH_FS.resolve(oldpath)) {
           throw new FS.ErrnoError(44);
         }
@@ -8346,7 +8492,7 @@ var ASM_CONSTS = {
           throw new FS.ErrnoError(63);
         }
         return parent.node_ops.symlink(parent, newname, oldpath);
-      },rename:(old_path, new_path) => {
+      },rename:function(old_path, new_path) {
         var old_dirname = PATH.dirname(old_path);
         var new_dirname = PATH.dirname(new_path);
         var old_name = PATH.basename(old_path);
@@ -8427,7 +8573,7 @@ var ASM_CONSTS = {
           // changed its name)
           FS.hashAddNode(old_node);
         }
-      },rmdir:(path) => {
+      },rmdir:function(path) {
         var lookup = FS.lookupPath(path, { parent: true });
         var parent = lookup.node;
         var name = PATH.basename(path);
@@ -8444,14 +8590,14 @@ var ASM_CONSTS = {
         }
         parent.node_ops.rmdir(parent, name);
         FS.destroyNode(node);
-      },readdir:(path) => {
+      },readdir:function(path) {
         var lookup = FS.lookupPath(path, { follow: true });
         var node = lookup.node;
         if (!node.node_ops.readdir) {
           throw new FS.ErrnoError(54);
         }
         return node.node_ops.readdir(node);
-      },unlink:(path) => {
+      },unlink:function(path) {
         var lookup = FS.lookupPath(path, { parent: true });
         var parent = lookup.node;
         if (!parent) {
@@ -8474,7 +8620,7 @@ var ASM_CONSTS = {
         }
         parent.node_ops.unlink(parent, name);
         FS.destroyNode(node);
-      },readlink:(path) => {
+      },readlink:function(path) {
         var lookup = FS.lookupPath(path);
         var link = lookup.node;
         if (!link) {
@@ -8484,7 +8630,7 @@ var ASM_CONSTS = {
           throw new FS.ErrnoError(28);
         }
         return PATH_FS.resolve(FS.getPath(link.parent), link.node_ops.readlink(link));
-      },stat:(path, dontFollow) => {
+      },stat:function(path, dontFollow) {
         var lookup = FS.lookupPath(path, { follow: !dontFollow });
         var node = lookup.node;
         if (!node) {
@@ -8494,11 +8640,11 @@ var ASM_CONSTS = {
           throw new FS.ErrnoError(63);
         }
         return node.node_ops.getattr(node);
-      },lstat:(path) => {
+      },lstat:function(path) {
         return FS.stat(path, true);
-      },chmod:(path, mode, dontFollow) => {
+      },chmod:function(path, mode, dontFollow) {
         var node;
-        if (typeof path == 'string') {
+        if (typeof path === 'string') {
           var lookup = FS.lookupPath(path, { follow: !dontFollow });
           node = lookup.node;
         } else {
@@ -8511,17 +8657,17 @@ var ASM_CONSTS = {
           mode: (mode & 4095) | (node.mode & ~4095),
           timestamp: Date.now()
         });
-      },lchmod:(path, mode) => {
+      },lchmod:function(path, mode) {
         FS.chmod(path, mode, true);
-      },fchmod:(fd, mode) => {
+      },fchmod:function(fd, mode) {
         var stream = FS.getStream(fd);
         if (!stream) {
           throw new FS.ErrnoError(8);
         }
         FS.chmod(stream.node, mode);
-      },chown:(path, uid, gid, dontFollow) => {
+      },chown:function(path, uid, gid, dontFollow) {
         var node;
-        if (typeof path == 'string') {
+        if (typeof path === 'string') {
           var lookup = FS.lookupPath(path, { follow: !dontFollow });
           node = lookup.node;
         } else {
@@ -8534,20 +8680,20 @@ var ASM_CONSTS = {
           timestamp: Date.now()
           // we ignore the uid / gid for now
         });
-      },lchown:(path, uid, gid) => {
+      },lchown:function(path, uid, gid) {
         FS.chown(path, uid, gid, true);
-      },fchown:(fd, uid, gid) => {
+      },fchown:function(fd, uid, gid) {
         var stream = FS.getStream(fd);
         if (!stream) {
           throw new FS.ErrnoError(8);
         }
         FS.chown(stream.node, uid, gid);
-      },truncate:(path, len) => {
+      },truncate:function(path, len) {
         if (len < 0) {
           throw new FS.ErrnoError(28);
         }
         var node;
-        if (typeof path == 'string') {
+        if (typeof path === 'string') {
           var lookup = FS.lookupPath(path, { follow: true });
           node = lookup.node;
         } else {
@@ -8570,7 +8716,7 @@ var ASM_CONSTS = {
           size: len,
           timestamp: Date.now()
         });
-      },ftruncate:(fd, len) => {
+      },ftruncate:function(fd, len) {
         var stream = FS.getStream(fd);
         if (!stream) {
           throw new FS.ErrnoError(8);
@@ -8579,25 +8725,25 @@ var ASM_CONSTS = {
           throw new FS.ErrnoError(28);
         }
         FS.truncate(stream.node, len);
-      },utime:(path, atime, mtime) => {
+      },utime:function(path, atime, mtime) {
         var lookup = FS.lookupPath(path, { follow: true });
         var node = lookup.node;
         node.node_ops.setattr(node, {
           timestamp: Math.max(atime, mtime)
         });
-      },open:(path, flags, mode, fd_start, fd_end) => {
+      },open:function(path, flags, mode, fd_start, fd_end) {
         if (path === "") {
           throw new FS.ErrnoError(44);
         }
-        flags = typeof flags == 'string' ? FS.modeStringToFlags(flags) : flags;
-        mode = typeof mode == 'undefined' ? 438 /* 0666 */ : mode;
+        flags = typeof flags === 'string' ? FS.modeStringToFlags(flags) : flags;
+        mode = typeof mode === 'undefined' ? 438 /* 0666 */ : mode;
         if ((flags & 64)) {
           mode = (mode & 4095) | 32768;
         } else {
           mode = 0;
         }
         var node;
-        if (typeof path == 'object') {
+        if (typeof path === 'object') {
           node = path;
         } else {
           path = PATH.normalize(path);
@@ -8655,10 +8801,13 @@ var ASM_CONSTS = {
         var stream = FS.createStream({
           node: node,
           path: FS.getPath(node),  // we want the absolute path to the node
+          id: node.id,
           flags: flags,
+          mode: node.mode,
           seekable: true,
           position: 0,
           stream_ops: node.stream_ops,
+          node_ops: node.node_ops,
           // used by the file family libc calls (fopen, fwrite, ferror, etc.)
           ungotten: [],
           error: false
@@ -8674,7 +8823,7 @@ var ASM_CONSTS = {
           }
         }
         return stream;
-      },close:(stream) => {
+      },close:function(stream) {
         if (FS.isClosed(stream)) {
           throw new FS.ErrnoError(8);
         }
@@ -8689,9 +8838,9 @@ var ASM_CONSTS = {
           FS.closeStream(stream.fd);
         }
         stream.fd = null;
-      },isClosed:(stream) => {
+      },isClosed:function(stream) {
         return stream.fd === null;
-      },llseek:(stream, offset, whence) => {
+      },llseek:function(stream, offset, whence) {
         if (FS.isClosed(stream)) {
           throw new FS.ErrnoError(8);
         }
@@ -8704,7 +8853,7 @@ var ASM_CONSTS = {
         stream.position = stream.stream_ops.llseek(stream, offset, whence);
         stream.ungotten = [];
         return stream.position;
-      },read:(stream, buffer, offset, length, position) => {
+      },read:function(stream, buffer, offset, length, position) {
         if (length < 0 || position < 0) {
           throw new FS.ErrnoError(28);
         }
@@ -8720,7 +8869,7 @@ var ASM_CONSTS = {
         if (!stream.stream_ops.read) {
           throw new FS.ErrnoError(28);
         }
-        var seeking = typeof position != 'undefined';
+        var seeking = typeof position !== 'undefined';
         if (!seeking) {
           position = stream.position;
         } else if (!stream.seekable) {
@@ -8729,7 +8878,7 @@ var ASM_CONSTS = {
         var bytesRead = stream.stream_ops.read(stream, buffer, offset, length, position);
         if (!seeking) stream.position += bytesRead;
         return bytesRead;
-      },write:(stream, buffer, offset, length, position, canOwn) => {
+      },write:function(stream, buffer, offset, length, position, canOwn) {
         if (length < 0 || position < 0) {
           throw new FS.ErrnoError(28);
         }
@@ -8749,7 +8898,7 @@ var ASM_CONSTS = {
           // seek to the end before writing in append mode
           FS.llseek(stream, 0, 2);
         }
-        var seeking = typeof position != 'undefined';
+        var seeking = typeof position !== 'undefined';
         if (!seeking) {
           position = stream.position;
         } else if (!stream.seekable) {
@@ -8758,7 +8907,7 @@ var ASM_CONSTS = {
         var bytesWritten = stream.stream_ops.write(stream, buffer, offset, length, position, canOwn);
         if (!seeking) stream.position += bytesWritten;
         return bytesWritten;
-      },allocate:(stream, offset, length) => {
+      },allocate:function(stream, offset, length) {
         if (FS.isClosed(stream)) {
           throw new FS.ErrnoError(8);
         }
@@ -8775,7 +8924,7 @@ var ASM_CONSTS = {
           throw new FS.ErrnoError(138);
         }
         stream.stream_ops.allocate(stream, offset, length);
-      },mmap:(stream, address, length, position, prot, flags) => {
+      },mmap:function(stream, address, length, position, prot, flags) {
         // User requests writing to file (prot & PROT_WRITE != 0).
         // Checking if we have permissions to write to the file unless
         // MAP_PRIVATE flag is set. According to POSIX spec it is possible
@@ -8794,17 +8943,20 @@ var ASM_CONSTS = {
           throw new FS.ErrnoError(43);
         }
         return stream.stream_ops.mmap(stream, address, length, position, prot, flags);
-      },msync:(stream, buffer, offset, length, mmapFlags) => {
+      },msync:function(stream, buffer, offset, length, mmapFlags) {
         if (!stream || !stream.stream_ops.msync) {
           return 0;
         }
         return stream.stream_ops.msync(stream, buffer, offset, length, mmapFlags);
-      },munmap:(stream) => 0,ioctl:(stream, cmd, arg) => {
+      },munmap:function(stream) {
+        return 0;
+      },ioctl:function(stream, cmd, arg) {
         if (!stream.stream_ops.ioctl) {
           throw new FS.ErrnoError(59);
         }
         return stream.stream_ops.ioctl(stream, cmd, arg);
-      },readFile:(path, opts = {}) => {
+      },readFile:function(path, opts) {
+        opts = opts || {};
         opts.flags = opts.flags || 0;
         opts.encoding = opts.encoding || 'binary';
         if (opts.encoding !== 'utf8' && opts.encoding !== 'binary') {
@@ -8823,10 +8975,11 @@ var ASM_CONSTS = {
         }
         FS.close(stream);
         return ret;
-      },writeFile:(path, data, opts = {}) => {
+      },writeFile:function(path, data, opts) {
+        opts = opts || {};
         opts.flags = opts.flags || 577;
         var stream = FS.open(path, opts.flags, opts.mode);
-        if (typeof data == 'string') {
+        if (typeof data === 'string') {
           var buf = new Uint8Array(lengthBytesUTF8(data)+1);
           var actualNumBytes = stringToUTF8Array(data, buf, 0, buf.length);
           FS.write(stream, buf, 0, actualNumBytes, undefined, opts.canOwn);
@@ -8836,7 +8989,9 @@ var ASM_CONSTS = {
           throw new Error('Unsupported data type');
         }
         FS.close(stream);
-      },cwd:() => FS.currentPath,chdir:(path) => {
+      },cwd:function() {
+        return FS.currentPath;
+      },chdir:function(path) {
         var lookup = FS.lookupPath(path, { follow: true });
         if (lookup.node === null) {
           throw new FS.ErrnoError(44);
@@ -8849,17 +9004,17 @@ var ASM_CONSTS = {
           throw new FS.ErrnoError(errCode);
         }
         FS.currentPath = lookup.path;
-      },createDefaultDirectories:() => {
+      },createDefaultDirectories:function() {
         FS.mkdir('/tmp');
         FS.mkdir('/home');
         FS.mkdir('/home/web_user');
-      },createDefaultDevices:() => {
+      },createDefaultDevices:function() {
         // create /dev
         FS.mkdir('/dev');
         // setup /dev/null
         FS.registerDevice(FS.makedev(1, 3), {
-          read: () => 0,
-          write: (stream, buffer, offset, length, pos) => length,
+          read: function() { return 0; },
+          write: function(stream, buffer, offset, length, pos) { return length; }
         });
         FS.mkdev('/dev/null', FS.makedev(1, 3));
         // setup /dev/tty and /dev/tty1
@@ -8877,24 +9032,24 @@ var ASM_CONSTS = {
         // just create the tmp dirs that reside in it commonly
         FS.mkdir('/dev/shm');
         FS.mkdir('/dev/shm/tmp');
-      },createSpecialDirectories:() => {
+      },createSpecialDirectories:function() {
         // create /proc/self/fd which allows /proc/self/fd/6 => readlink gives the
         // name of the stream for fd 6 (see test_unistd_ttyname)
         FS.mkdir('/proc');
         var proc_self = FS.mkdir('/proc/self');
         FS.mkdir('/proc/self/fd');
         FS.mount({
-          mount: () => {
+          mount: function() {
             var node = FS.createNode(proc_self, 'fd', 16384 | 511 /* 0777 */, 73);
             node.node_ops = {
-              lookup: (parent, name) => {
+              lookup: function(parent, name) {
                 var fd = +name;
                 var stream = FS.getStream(fd);
                 if (!stream) throw new FS.ErrnoError(8);
                 var ret = {
                   parent: null,
                   mount: { mountpoint: 'fake' },
-                  node_ops: { readlink: () => stream.path },
+                  node_ops: { readlink: function() { return stream.path } }
                 };
                 ret.parent = ret; // make it look like a simple root node
                 return ret;
@@ -8903,7 +9058,7 @@ var ASM_CONSTS = {
             return node;
           }
         }, {}, '/proc/self/fd');
-      },createStandardStreams:() => {
+      },createStandardStreams:function() {
         // TODO deprecate the old functionality of a single
         // input / output callback and that utilizes FS.createDevice
         // and instead require a unique set of stream ops
@@ -8935,7 +9090,7 @@ var ASM_CONSTS = {
         assert(stdin.fd === 0, 'invalid handle for stdin (' + stdin.fd + ')');
         assert(stdout.fd === 1, 'invalid handle for stdout (' + stdout.fd + ')');
         assert(stderr.fd === 2, 'invalid handle for stderr (' + stderr.fd + ')');
-      },ensureErrnoError:() => {
+      },ensureErrnoError:function() {
         if (FS.ErrnoError) return;
         FS.ErrnoError = /** @this{Object} */ function ErrnoError(errno, node) {
           this.node = node;
@@ -8962,11 +9117,11 @@ var ASM_CONSTS = {
         FS.ErrnoError.prototype = new Error();
         FS.ErrnoError.prototype.constructor = FS.ErrnoError;
         // Some errors may happen quite a bit, to avoid overhead we reuse them (and suffer a lack of stack info)
-        [44].forEach((code) => {
+        [44].forEach(function(code) {
           FS.genericErrors[code] = new FS.ErrnoError(code);
           FS.genericErrors[code].stack = '<generic error, no stack>';
         });
-      },staticInit:() => {
+      },staticInit:function() {
         FS.ensureErrnoError();
   
         FS.nameTable = new Array(4096);
@@ -8980,7 +9135,7 @@ var ASM_CONSTS = {
         FS.filesystems = {
           'MEMFS': MEMFS,
         };
-      },init:(input, output, error) => {
+      },init:function(input, output, error) {
         assert(!FS.init.initialized, 'FS.init was previously called. If you want to initialize later with custom parameters, remove any earlier calls (note that one is automatically added to the generated code)');
         FS.init.initialized = true;
   
@@ -8992,11 +9147,10 @@ var ASM_CONSTS = {
         Module['stderr'] = error || Module['stderr'];
   
         FS.createStandardStreams();
-      },quit:() => {
+      },quit:function() {
         FS.init.initialized = false;
-        // Call musl-internal function to close all stdio streams, so nothing is
-        // left in internal buffers.
-        ___stdio_exit();
+        // force-flush all streams, so we get musl std streams printed out
+        _fflush(0);
         // close all of our streams
         for (var i = 0; i < FS.streams.length; i++) {
           var stream = FS.streams[i];
@@ -9005,19 +9159,19 @@ var ASM_CONSTS = {
           }
           FS.close(stream);
         }
-      },getMode:(canRead, canWrite) => {
+      },getMode:function(canRead, canWrite) {
         var mode = 0;
         if (canRead) mode |= 292 | 73;
         if (canWrite) mode |= 146;
         return mode;
-      },findObject:(path, dontResolveLastLink) => {
+      },findObject:function(path, dontResolveLastLink) {
         var ret = FS.analyzePath(path, dontResolveLastLink);
         if (ret.exists) {
           return ret.object;
         } else {
           return null;
         }
-      },analyzePath:(path, dontResolveLastLink) => {
+      },analyzePath:function(path, dontResolveLastLink) {
         // operate from within the context of the symlink's target
         try {
           var lookup = FS.lookupPath(path, { follow: !dontResolveLastLink });
@@ -9044,8 +9198,8 @@ var ASM_CONSTS = {
           ret.error = e.errno;
         };
         return ret;
-      },createPath:(parent, path, canRead, canWrite) => {
-        parent = typeof parent == 'string' ? parent : FS.getPath(parent);
+      },createPath:function(parent, path, canRead, canWrite) {
+        parent = typeof parent === 'string' ? parent : FS.getPath(parent);
         var parts = path.split('/').reverse();
         while (parts.length) {
           var part = parts.pop();
@@ -9059,20 +9213,16 @@ var ASM_CONSTS = {
           parent = current;
         }
         return current;
-      },createFile:(parent, name, properties, canRead, canWrite) => {
-        var path = PATH.join2(typeof parent == 'string' ? parent : FS.getPath(parent), name);
+      },createFile:function(parent, name, properties, canRead, canWrite) {
+        var path = PATH.join2(typeof parent === 'string' ? parent : FS.getPath(parent), name);
         var mode = FS.getMode(canRead, canWrite);
         return FS.create(path, mode);
-      },createDataFile:(parent, name, data, canRead, canWrite, canOwn) => {
-        var path = name;
-        if (parent) {
-          parent = typeof parent == 'string' ? parent : FS.getPath(parent);
-          path = name ? PATH.join2(parent, name) : parent;
-        }
+      },createDataFile:function(parent, name, data, canRead, canWrite, canOwn) {
+        var path = name ? PATH.join2(typeof parent === 'string' ? parent : FS.getPath(parent), name) : parent;
         var mode = FS.getMode(canRead, canWrite);
         var node = FS.create(path, mode);
         if (data) {
-          if (typeof data == 'string') {
+          if (typeof data === 'string') {
             var arr = new Array(data.length);
             for (var i = 0, len = data.length; i < len; ++i) arr[i] = data.charCodeAt(i);
             data = arr;
@@ -9085,24 +9235,24 @@ var ASM_CONSTS = {
           FS.chmod(node, mode);
         }
         return node;
-      },createDevice:(parent, name, input, output) => {
-        var path = PATH.join2(typeof parent == 'string' ? parent : FS.getPath(parent), name);
+      },createDevice:function(parent, name, input, output) {
+        var path = PATH.join2(typeof parent === 'string' ? parent : FS.getPath(parent), name);
         var mode = FS.getMode(!!input, !!output);
         if (!FS.createDevice.major) FS.createDevice.major = 64;
         var dev = FS.makedev(FS.createDevice.major++, 0);
         // Create a fake device that a set of stream ops to emulate
         // the old behavior.
         FS.registerDevice(dev, {
-          open: (stream) => {
+          open: function(stream) {
             stream.seekable = false;
           },
-          close: (stream) => {
+          close: function(stream) {
             // flush any pending line data
             if (output && output.buffer && output.buffer.length) {
               output(10);
             }
           },
-          read: (stream, buffer, offset, length, pos /* ignored */) => {
+          read: function(stream, buffer, offset, length, pos /* ignored */) {
             var bytesRead = 0;
             for (var i = 0; i < length; i++) {
               var result;
@@ -9123,7 +9273,7 @@ var ASM_CONSTS = {
             }
             return bytesRead;
           },
-          write: (stream, buffer, offset, length, pos) => {
+          write: function(stream, buffer, offset, length, pos) {
             for (var i = 0; i < length; i++) {
               try {
                 output(buffer[offset+i]);
@@ -9138,9 +9288,9 @@ var ASM_CONSTS = {
           }
         });
         return FS.mkdev(path, mode, dev);
-      },forceLoadFile:(obj) => {
+      },forceLoadFile:function(obj) {
         if (obj.isDevice || obj.isFolder || obj.link || obj.contents) return true;
-        if (typeof XMLHttpRequest != 'undefined') {
+        if (typeof XMLHttpRequest !== 'undefined') {
           throw new Error("Lazy loading should have been performed (contents set) in createLazyFile, but it was not. Lazy loading only works in web workers. Use --embed-file or --preload-file in emcc on the main thread.");
         } else if (read_) {
           // Command-line.
@@ -9155,7 +9305,7 @@ var ASM_CONSTS = {
         } else {
           throw new Error('Cannot load without read() or XMLHttpRequest.');
         }
-      },createLazyFile:(parent, name, url, canRead, canWrite) => {
+      },createLazyFile:function(parent, name, url, canRead, canWrite) {
         // Lazy chunked Uint8Array (implements get and length from Uint8Array). Actual getting is abstracted away for eventual reuse.
         /** @constructor */
         function LazyUint8Array() {
@@ -9189,7 +9339,7 @@ var ASM_CONSTS = {
           if (!hasByteServing) chunkSize = datalength;
   
           // Function to get a range from the remote URL.
-          var doXHR = (from, to) => {
+          var doXHR = (function(from, to) {
             if (from > to) throw new Error("invalid range (" + from + ", " + to + ") or no bytes requested!");
             if (to > datalength-1) throw new Error("only " + datalength + " bytes available! programmer error!");
   
@@ -9199,7 +9349,7 @@ var ASM_CONSTS = {
             if (datalength !== chunkSize) xhr.setRequestHeader("Range", "bytes=" + from + "-" + to);
   
             // Some hints to the browser that we want binary data.
-            xhr.responseType = 'arraybuffer';
+            if (typeof Uint8Array != 'undefined') xhr.responseType = 'arraybuffer';
             if (xhr.overrideMimeType) {
               xhr.overrideMimeType('text/plain; charset=x-user-defined');
             }
@@ -9211,16 +9361,16 @@ var ASM_CONSTS = {
             } else {
               return intArrayFromString(xhr.responseText || '', true);
             }
-          };
+          });
           var lazyArray = this;
-          lazyArray.setDataGetter((chunkNum) => {
+          lazyArray.setDataGetter(function(chunkNum) {
             var start = chunkNum * chunkSize;
             var end = (chunkNum+1) * chunkSize - 1; // including this byte
             end = Math.min(end, datalength-1); // if datalength-1 is selected, this is the last block
-            if (typeof lazyArray.chunks[chunkNum] == 'undefined') {
+            if (typeof(lazyArray.chunks[chunkNum]) === "undefined") {
               lazyArray.chunks[chunkNum] = doXHR(start, end);
             }
-            if (typeof lazyArray.chunks[chunkNum] == 'undefined') throw new Error('doXHR failed!');
+            if (typeof(lazyArray.chunks[chunkNum]) === "undefined") throw new Error("doXHR failed!");
             return lazyArray.chunks[chunkNum];
           });
   
@@ -9236,7 +9386,7 @@ var ASM_CONSTS = {
           this._chunkSize = chunkSize;
           this.lengthKnown = true;
         };
-        if (typeof XMLHttpRequest != 'undefined') {
+        if (typeof XMLHttpRequest !== 'undefined') {
           if (!ENVIRONMENT_IS_WORKER) throw 'Cannot do synchronous binary XHRs outside webworkers in modern browsers. Use --embed-file or --preload-file in emcc';
           var lazyArray = new LazyUint8Array();
           Object.defineProperties(lazyArray, {
@@ -9282,7 +9432,7 @@ var ASM_CONSTS = {
         // override each stream op with one that tries to force load the lazy file first
         var stream_ops = {};
         var keys = Object.keys(node.stream_ops);
-        keys.forEach((key) => {
+        keys.forEach(function(key) {
           var fn = node.stream_ops[key];
           stream_ops[key] = function forceLoadLazyFile() {
             FS.forceLoadFile(node);
@@ -9290,7 +9440,7 @@ var ASM_CONSTS = {
           };
         });
         // use a custom read function
-        stream_ops.read = (stream, buffer, offset, length, position) => {
+        stream_ops.read = function stream_ops_read(stream, buffer, offset, length, position) {
           FS.forceLoadFile(node);
           var contents = stream.node.contents;
           if (position >= contents.length)
@@ -9310,7 +9460,8 @@ var ASM_CONSTS = {
         };
         node.stream_ops = stream_ops;
         return node;
-      },createPreloadedFile:(parent, name, url, canRead, canWrite, onload, onerror, dontCreateFile, canOwn, preFinish) => {
+      },createPreloadedFile:function(parent, name, url, canRead, canWrite, onload, onerror, dontCreateFile, canOwn, preFinish) {
+        Browser.init(); // XXX perhaps this method should move onto Browser?
         // TODO we should allow people to just pass in a complete filename instead
         // of parent and name being that we just join them anyways
         var fullname = name ? PATH_FS.resolve(PATH.join2(parent, name)) : parent;
@@ -9324,39 +9475,46 @@ var ASM_CONSTS = {
             if (onload) onload();
             removeRunDependency(dep);
           }
-          if (Browser.handledByPreloadPlugin(byteArray, fullname, finish, () => {
-            if (onerror) onerror();
-            removeRunDependency(dep);
-          })) {
-            return;
-          }
-          finish(byteArray);
+          var handled = false;
+          Module['preloadPlugins'].forEach(function(plugin) {
+            if (handled) return;
+            if (plugin['canHandle'](fullname)) {
+              plugin['handle'](byteArray, fullname, finish, function() {
+                if (onerror) onerror();
+                removeRunDependency(dep);
+              });
+              handled = true;
+            }
+          });
+          if (!handled) finish(byteArray);
         }
         addRunDependency(dep);
         if (typeof url == 'string') {
-          asyncLoad(url, (byteArray) => processData(byteArray), onerror);
+          asyncLoad(url, function(byteArray) {
+            processData(byteArray);
+          }, onerror);
         } else {
           processData(url);
         }
-      },indexedDB:() => {
+      },indexedDB:function() {
         return window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-      },DB_NAME:() => {
+      },DB_NAME:function() {
         return 'EM_FS_' + window.location.pathname;
-      },DB_VERSION:20,DB_STORE_NAME:"FILE_DATA",saveFilesToDB:(paths, onload, onerror) => {
-        onload = onload || (() => {});
-        onerror = onerror || (() => {});
+      },DB_VERSION:20,DB_STORE_NAME:"FILE_DATA",saveFilesToDB:function(paths, onload, onerror) {
+        onload = onload || function(){};
+        onerror = onerror || function(){};
         var indexedDB = FS.indexedDB();
         try {
           var openRequest = indexedDB.open(FS.DB_NAME(), FS.DB_VERSION);
         } catch (e) {
           return onerror(e);
         }
-        openRequest.onupgradeneeded = () => {
+        openRequest.onupgradeneeded = function openRequest_onupgradeneeded() {
           out('creating db');
           var db = openRequest.result;
           db.createObjectStore(FS.DB_STORE_NAME);
         };
-        openRequest.onsuccess = () => {
+        openRequest.onsuccess = function openRequest_onsuccess() {
           var db = openRequest.result;
           var transaction = db.transaction([FS.DB_STORE_NAME], 'readwrite');
           var files = transaction.objectStore(FS.DB_STORE_NAME);
@@ -9364,17 +9522,17 @@ var ASM_CONSTS = {
           function finish() {
             if (fail == 0) onload(); else onerror();
           }
-          paths.forEach((path) => {
+          paths.forEach(function(path) {
             var putRequest = files.put(FS.analyzePath(path).object.contents, path);
-            putRequest.onsuccess = () => { ok++; if (ok + fail == total) finish() };
-            putRequest.onerror = () => { fail++; if (ok + fail == total) finish() };
+            putRequest.onsuccess = function putRequest_onsuccess() { ok++; if (ok + fail == total) finish() };
+            putRequest.onerror = function putRequest_onerror() { fail++; if (ok + fail == total) finish() };
           });
           transaction.onerror = onerror;
         };
         openRequest.onerror = onerror;
-      },loadFilesFromDB:(paths, onload, onerror) => {
-        onload = onload || (() => {});
-        onerror = onerror || (() => {});
+      },loadFilesFromDB:function(paths, onload, onerror) {
+        onload = onload || function(){};
+        onerror = onerror || function(){};
         var indexedDB = FS.indexedDB();
         try {
           var openRequest = indexedDB.open(FS.DB_NAME(), FS.DB_VERSION);
@@ -9382,7 +9540,7 @@ var ASM_CONSTS = {
           return onerror(e);
         }
         openRequest.onupgradeneeded = onerror; // no database to load from
-        openRequest.onsuccess = () => {
+        openRequest.onsuccess = function openRequest_onsuccess() {
           var db = openRequest.result;
           try {
             var transaction = db.transaction([FS.DB_STORE_NAME], 'readonly');
@@ -9395,9 +9553,9 @@ var ASM_CONSTS = {
           function finish() {
             if (fail == 0) onload(); else onerror();
           }
-          paths.forEach((path) => {
+          paths.forEach(function(path) {
             var getRequest = files.get(path);
-            getRequest.onsuccess = () => {
+            getRequest.onsuccess = function getRequest_onsuccess() {
               if (FS.analyzePath(path).exists) {
                 FS.unlink(path);
               }
@@ -9405,26 +9563,26 @@ var ASM_CONSTS = {
               ok++;
               if (ok + fail == total) finish();
             };
-            getRequest.onerror = () => { fail++; if (ok + fail == total) finish() };
+            getRequest.onerror = function getRequest_onerror() { fail++; if (ok + fail == total) finish() };
           });
           transaction.onerror = onerror;
         };
         openRequest.onerror = onerror;
-      },absolutePath:() => {
+      },absolutePath:function() {
         abort('FS.absolutePath has been removed; use PATH_FS.resolve instead');
-      },createFolder:() => {
+      },createFolder:function() {
         abort('FS.createFolder has been removed; use FS.mkdir instead');
-      },createLink:() => {
+      },createLink:function() {
         abort('FS.createLink has been removed; use FS.symlink instead');
-      },joinPath:() => {
+      },joinPath:function() {
         abort('FS.joinPath has been removed; use PATH.join instead');
-      },mmapAlloc:() => {
+      },mmapAlloc:function() {
         abort('FS.mmapAlloc has been replaced by the top level function mmapAlloc');
-      },standardizePath:() => {
+      },standardizePath:function() {
         abort('FS.standardizePath has been removed; use PATH.normalize instead');
       }};
-  var SYSCALLS = {DEFAULT_POLLMASK:5,calculateAt:function(dirfd, path, allowEmpty) {
-        if (PATH.isAbs(path)) {
+  var SYSCALLS = {mappings:{},DEFAULT_POLLMASK:5,calculateAt:function(dirfd, path, allowEmpty) {
+        if (path[0] === '/') {
           return path;
         }
         // relative path
@@ -9476,6 +9634,13 @@ var ASM_CONSTS = {
       },doMsync:function(addr, stream, len, flags, offset) {
         var buffer = HEAPU8.slice(addr, addr + len);
         FS.msync(stream, buffer, offset, len, flags);
+      },doMkdir:function(path, mode) {
+        // remove a trailing slash, if one - /a/b/ has basename of '', but
+        // we want to create b in the context of this function
+        path = PATH.normalize(path);
+        if (path[path.length-1] === '/') path = path.substr(0, path.length-1);
+        FS.mkdir(path, mode, 0);
+        return 0;
       },doMknod:function(path, mode, dev) {
         // we don't want this in the JS API as it uses mknod to create all nodes.
         switch (mode & 61440) {
@@ -9519,12 +9684,15 @@ var ASM_CONSTS = {
           return -2;
         }
         return 0;
+      },doDup:function(path, flags, suggestFD) {
+        var suggest = FS.getStream(suggestFD);
+        if (suggest) FS.close(suggest);
+        return FS.open(path, flags, 0, suggestFD, suggestFD).fd;
       },doReadv:function(stream, iov, iovcnt, offset) {
         var ret = 0;
         for (var i = 0; i < iovcnt; i++) {
-          var ptr = HEAP32[((iov)>>2)];
-          var len = HEAP32[(((iov)+(4))>>2)];
-          iov += 8;
+          var ptr = HEAP32[(((iov)+(i*8))>>2)];
+          var len = HEAP32[(((iov)+(i*8 + 4))>>2)];
           var curr = FS.read(stream, HEAP8,ptr, len, offset);
           if (curr < 0) return -1;
           ret += curr;
@@ -9534,9 +9702,8 @@ var ASM_CONSTS = {
       },doWritev:function(stream, iov, iovcnt, offset) {
         var ret = 0;
         for (var i = 0; i < iovcnt; i++) {
-          var ptr = HEAP32[((iov)>>2)];
-          var len = HEAP32[(((iov)+(4))>>2)];
-          iov += 8;
+          var ptr = HEAP32[(((iov)+(i*8))>>2)];
+          var len = HEAP32[(((iov)+(i*8 + 4))>>2)];
           var curr = FS.write(stream, HEAP8,ptr, len, offset);
           if (curr < 0) return -1;
           ret += curr;
@@ -9554,13 +9721,16 @@ var ASM_CONSTS = {
         var stream = FS.getStream(fd);
         if (!stream) throw new FS.ErrnoError(8);
         return stream;
+      },get64:function(low, high) {
+        if (low >= 0) assert(high === 0);
+        else assert(high === -1);
+        return low;
       }};
   
   function ___syscall_fcntl64(fd, cmd, varargs) {
     if (ENVIRONMENT_IS_PTHREAD)
       return _emscripten_proxy_to_main_thread_js(3, 1, fd, cmd, varargs);
-    
-  SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
   try {
   
       var stream = SYSCALLS.getStreamFromFD(fd);
@@ -9571,7 +9741,7 @@ var ASM_CONSTS = {
             return -28;
           }
           var newStream;
-          newStream = FS.createStream(stream, arg);
+          newStream = FS.open(stream.path, stream.flags, 0, arg);
           return newStream.fd;
         }
         case 1:
@@ -9612,7 +9782,7 @@ var ASM_CONSTS = {
         }
       }
     } catch (e) {
-    if (typeof FS == 'undefined' || !(e instanceof FS.ErrnoError)) throw e;
+    if (typeof FS === 'undefined' || !(e instanceof FS.ErrnoError)) throw e;
     return -e.errno;
   }
   
@@ -9623,8 +9793,7 @@ var ASM_CONSTS = {
   function ___syscall_ioctl(fd, op, varargs) {
     if (ENVIRONMENT_IS_PTHREAD)
       return _emscripten_proxy_to_main_thread_js(4, 1, fd, op, varargs);
-    
-  SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
   try {
   
       var stream = SYSCALLS.getStreamFromFD(fd);
@@ -9673,7 +9842,7 @@ var ASM_CONSTS = {
         default: abort('bad ioctl syscall ' + op);
       }
     } catch (e) {
-    if (typeof FS == 'undefined' || !(e instanceof FS.ErrnoError)) throw e;
+    if (typeof FS === 'undefined' || !(e instanceof FS.ErrnoError)) throw e;
     return -e.errno;
   }
   
@@ -9681,57 +9850,128 @@ var ASM_CONSTS = {
   
 
   
-  function ___syscall_openat(dirfd, path, flags, varargs) {
+  function ___syscall_open(path, flags, varargs) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(5, 1, dirfd, path, flags, varargs);
-    
-  SYSCALLS.varargs = varargs;
+      return _emscripten_proxy_to_main_thread_js(5, 1, path, flags, varargs);
+    SYSCALLS.varargs = varargs;
   try {
   
-      path = SYSCALLS.getStr(path);
-      path = SYSCALLS.calculateAt(dirfd, path);
+      var pathname = SYSCALLS.getStr(path);
       var mode = varargs ? SYSCALLS.get() : 0;
-      return FS.open(path, flags, mode).fd;
+      var stream = FS.open(pathname, flags, mode);
+      return stream.fd;
     } catch (e) {
-    if (typeof FS == 'undefined' || !(e instanceof FS.ErrnoError)) throw e;
+    if (typeof FS === 'undefined' || !(e instanceof FS.ErrnoError)) throw e;
     return -e.errno;
   }
   
   }
   
-
-  function __emscripten_date_now() {
-      return Date.now();
-    }
 
   function __emscripten_default_pthread_stack_size() {
       return 2097152;
     }
 
-  var nowIsMonotonic = true;;
-  function __emscripten_get_now_is_monotonic() {
-      return nowIsMonotonic;
+  function __emscripten_futex_wait_non_blocking(addr, val, timeout) {
+      // Should only be called from the main web thread where atomics.wait is not allowed.
+      assert(ENVIRONMENT_IS_WEB);
+  
+      // Atomics.wait is not available in the main browser thread, so simulate it via busy spinning.
+      var tNow = performance.now();
+      var tEnd = tNow + timeout;
+  
+      // Register globally which address the main thread is simulating to be
+      // waiting on. When zero, the main thread is not waiting on anything, and on
+      // nonzero, the contents of the address pointed by __emscripten_main_thread_futex
+      // tell which address the main thread is simulating its wait on.
+      // We need to be careful of recursion here: If we wait on a futex, and
+      // then call _emscripten_main_thread_process_queued_calls() below, that
+      // will call code that takes the proxying mutex - which can once more
+      // reach this code in a nested call. To avoid interference between the
+      // two (there is just a single __emscripten_main_thread_futex at a time), unmark
+      // ourselves before calling the potentially-recursive call. See below for
+      // how we handle the case of our futex being notified during the time in
+      // between when we are not set as the value of __emscripten_main_thread_futex.
+      assert(__emscripten_main_thread_futex > 0);
+      var lastAddr = Atomics.exchange(HEAP32, __emscripten_main_thread_futex >> 2, addr);
+      // We must not have already been waiting.
+      assert(lastAddr == 0);
+  
+      while (1) {
+        // Check for a timeout.
+        tNow = performance.now();
+        if (tNow > tEnd) {
+          // We timed out, so stop marking ourselves as waiting.
+          lastAddr = Atomics.exchange(HEAP32, __emscripten_main_thread_futex >> 2, 0);
+          // The current value must have been our address which we set, or
+          // in a race it was set to 0 which means another thread just allowed
+          // us to run, but (tragically) that happened just a bit too late.
+          assert(lastAddr == addr || lastAddr == 0);
+          return -73;
+        }
+        // We are performing a blocking loop here, so we must handle proxied
+        // events from pthreads, to avoid deadlocks.
+        // Note that we have to do so carefully, as we may take a lock while
+        // doing so, which can recurse into this function; stop marking
+        // ourselves as waiting while we do so.
+        lastAddr = Atomics.exchange(HEAP32, __emscripten_main_thread_futex >> 2, 0);
+        assert(lastAddr == addr || lastAddr == 0);
+        if (lastAddr == 0) {
+          // We were told to stop waiting, so stop.
+          break;
+        }
+        _emscripten_main_thread_process_queued_calls();
+  
+        // Check the value, as if we were starting the futex all over again.
+        // This handles the following case:
+        //
+        //  * wait on futex A
+        //  * recurse into emscripten_main_thread_process_queued_calls(),
+        //    which waits on futex B. that sets the __emscripten_main_thread_futex address to
+        //    futex B, and there is no longer any mention of futex A.
+        //  * a worker is done with futex A. it checks __emscripten_main_thread_futex but does
+        //    not see A, so it does nothing special for the main thread.
+        //  * a worker is done with futex B. it flips mainThreadMutex from B
+        //    to 0, ending the wait on futex B.
+        //  * we return to the wait on futex A. __emscripten_main_thread_futex is 0, but that
+        //    is because of futex B being done - we can't tell from
+        //    __emscripten_main_thread_futex whether A is done or not. therefore, check the
+        //    memory value of the futex.
+        //
+        // That case motivates the design here. Given that, checking the memory
+        // address is also necessary for other reasons: we unset and re-set our
+        // address in __emscripten_main_thread_futex around calls to
+        // emscripten_main_thread_process_queued_calls(), and a worker could
+        // attempt to wake us up right before/after such times.
+        //
+        // Note that checking the memory value of the futex is valid to do: we
+        // could easily have been delayed (relative to the worker holding on
+        // to futex A), which means we could be starting all of our work at the
+        // later time when there is no need to block. The only "odd" thing is
+        // that we may have caused side effects in that "delay" time. But the
+        // only side effects we can have are to call
+        // emscripten_main_thread_process_queued_calls(). That is always ok to
+        // do on the main thread (it's why it is ok for us to call it in the
+        // middle of this function, and elsewhere). So if we check the value
+        // here and return, it's the same is if what happened on the main thread
+        // was the same as calling emscripten_main_thread_process_queued_calls()
+        // a few times times before calling emscripten_futex_wait().
+        if (Atomics.load(HEAP32, addr >> 2) != val) {
+          return -6;
+        }
+  
+        // Mark us as waiting once more, and continue the loop.
+        lastAddr = Atomics.exchange(HEAP32, __emscripten_main_thread_futex >> 2, addr);
+        assert(lastAddr == 0);
+      }
+      return 0;
     }
 
-  function executeNotifiedProxyingQueue(queue) {
-      try {
-        // Only execute the queue if we have a live pthread runtime. We
-        // implement pthread_self to return 0 if there is no live runtime.
-        // TODO: Use `callUserCallback` to correctly handle unwinds, etc. once
-        //       `runtimeExited` is correctly unset on workers.
-        if (_pthread_self()) {
-          _emscripten_proxy_execute_queue(queue);
-        }
-      } finally {
-        // Always decrement the ref count.
-        Atomics.sub(HEAP32, queue >> 2, 1);
-      }
-    }
-  function __emscripten_notify_proxying_queue(targetThreadId, currThreadId, mainThreadId, queue) {
-      if (targetThreadId == currThreadId) {
-        setTimeout(() => executeNotifiedProxyingQueue(queue));
+  function __emscripten_notify_thread_queue(targetThreadId, mainThreadId) {
+      if (targetThreadId == mainThreadId) {
+        postMessage({'cmd' : 'processQueuedMainThreadWork'});
       } else if (ENVIRONMENT_IS_PTHREAD) {
-        postMessage({'targetThread' : targetThreadId, 'cmd' : 'processProxyingQueue', 'queue' : queue});
+        postMessage({'targetThread': targetThreadId, 'cmd': 'processThreadQueue'});
       } else {
         var pthread = PThread.pthreads[targetThreadId];
         var worker = pthread && pthread.worker;
@@ -9739,19 +9979,15 @@ var ASM_CONSTS = {
           err('Cannot send message to thread with ID ' + targetThreadId + ', unknown thread ID!');
           return /*0*/;
         }
-        worker.postMessage({'cmd' : 'processProxyingQueue', 'queue': queue});
+        worker.postMessage({'cmd' : 'processThreadQueue'});
       }
       return 1;
-    }
-
-  function __emscripten_set_offscreencanvas_size(target, width, height) {
-      err('emscripten_set_offscreencanvas_size: Build with -sOFFSCREENCANVAS_SUPPORT=1 to enable transferring canvases to pthreads.');
-      return -1;
     }
 
   function _abort() {
       abort('native code called abort()');
     }
+
 
   var readAsmConstArgsArray = [];
   function readAsmConstArgs(sigPtr, buf) {
@@ -9766,7 +10002,7 @@ var ASM_CONSTS = {
       // index into HEAP32.
       buf >>= 2;
       while (ch = HEAPU8[sigPtr++]) {
-        assert(ch === 100/*'d'*/ || ch === 102/*'f'*/ || ch === 105 /*'i'*/, 'Invalid character ' + ch + '("' + String.fromCharCode(ch) + '") in readAsmConstArgs! Use only "d", "f" or "i", and do not specify "v" for void return argument.');
+        assert(ch === 100/*'d'*/ || ch === 102/*'f'*/ || ch === 105 /*'i'*/);
         // A double takes two 32-bit slots, and must also be aligned - the backend
         // will emit padding to avoid that.
         var readAsmConstArgsDouble = ch < 105;
@@ -9808,15 +10044,9 @@ var ASM_CONSTS = {
   
     }
 
-  var _emscripten_get_now;if (ENVIRONMENT_IS_NODE) {
-    _emscripten_get_now = () => {
-      var t = process['hrtime']();
-      return t[0] * 1e3 + t[1] / 1e6;
-    };
-  } else if (ENVIRONMENT_IS_PTHREAD) {
-    _emscripten_get_now = () => performance.now() - Module['__performance_now_clock_drift'];
-  } else _emscripten_get_now = () => performance.now();
-  ;
+  function _emscripten_conditional_set_current_thread_status(expectedStatus, newStatus) {
+    }
+
 
   function _emscripten_memcpy_big(dest, src, num) {
       HEAPU8.copyWithin(dest, src, src + num);
@@ -9845,7 +10075,7 @@ var ASM_CONSTS = {
         var b = args >> 3;
         for (var i = 0; i < numCallArgs; i++) {
           var arg = outerArgs[2 + i];
-          if (typeof arg == 'bigint') {
+          if (typeof arg === 'bigint') {
             // The prefix is non-zero to indicate a bigint.
             HEAP64[b + 2*i] = BigInt(1);
             HEAP64[b + 2*i + 1] = arg;
@@ -9881,12 +10111,8 @@ var ASM_CONSTS = {
       return func.apply(null, _emscripten_receive_on_main_thread_js_callArgs);
     }
 
-  function _emscripten_get_heap_max() {
-      return HEAPU8.length;
-    }
-  
   function abortOnCannotGrowMemory(requestedSize) {
-      abort('Cannot enlarge memory arrays to size ' + requestedSize + ' bytes (OOM). Either (1) compile with -sINITIAL_MEMORY=X with X higher than the current value ' + HEAP8.length + ', (2) compile with -sALLOW_MEMORY_GROWTH which allows increasing the size at runtime, or (3) if you want malloc to return NULL (0) instead of this abort, compile with -sABORTING_MALLOC=0');
+      abort('Cannot enlarge memory arrays to size ' + requestedSize + ' bytes (OOM). Either (1) compile with  -s INITIAL_MEMORY=X  with X higher than the current value ' + HEAP8.length + ', (2) compile with  -s ALLOW_MEMORY_GROWTH=1  which allows increasing the size at runtime, or (3) if you want malloc to return NULL (0) instead of this abort, compile with  -s ABORTING_MALLOC=0 ');
     }
   function _emscripten_resize_heap(requestedSize) {
       var oldSize = HEAPU8.length;
@@ -9894,9 +10120,414 @@ var ASM_CONSTS = {
       abortOnCannotGrowMemory(requestedSize);
     }
 
+  var JSEvents = {inEventHandler:0,removeAllEventListeners:function() {
+        for (var i = JSEvents.eventHandlers.length-1; i >= 0; --i) {
+          JSEvents._removeHandler(i);
+        }
+        JSEvents.eventHandlers = [];
+        JSEvents.deferredCalls = [];
+      },registerRemoveEventListeners:function() {
+        if (!JSEvents.removeEventListenersRegistered) {
+          __ATEXIT__.push(JSEvents.removeAllEventListeners);
+          JSEvents.removeEventListenersRegistered = true;
+        }
+      },deferredCalls:[],deferCall:function(targetFunction, precedence, argsList) {
+        function arraysHaveEqualContent(arrA, arrB) {
+          if (arrA.length != arrB.length) return false;
+  
+          for (var i in arrA) {
+            if (arrA[i] != arrB[i]) return false;
+          }
+          return true;
+        }
+        // Test if the given call was already queued, and if so, don't add it again.
+        for (var i in JSEvents.deferredCalls) {
+          var call = JSEvents.deferredCalls[i];
+          if (call.targetFunction == targetFunction && arraysHaveEqualContent(call.argsList, argsList)) {
+            return;
+          }
+        }
+        JSEvents.deferredCalls.push({
+          targetFunction: targetFunction,
+          precedence: precedence,
+          argsList: argsList
+        });
+  
+        JSEvents.deferredCalls.sort(function(x,y) { return x.precedence < y.precedence; });
+      },removeDeferredCalls:function(targetFunction) {
+        for (var i = 0; i < JSEvents.deferredCalls.length; ++i) {
+          if (JSEvents.deferredCalls[i].targetFunction == targetFunction) {
+            JSEvents.deferredCalls.splice(i, 1);
+            --i;
+          }
+        }
+      },canPerformEventHandlerRequests:function() {
+        return JSEvents.inEventHandler && JSEvents.currentEventHandler.allowsDeferredCalls;
+      },runDeferredCalls:function() {
+        if (!JSEvents.canPerformEventHandlerRequests()) {
+          return;
+        }
+        for (var i = 0; i < JSEvents.deferredCalls.length; ++i) {
+          var call = JSEvents.deferredCalls[i];
+          JSEvents.deferredCalls.splice(i, 1);
+          --i;
+          call.targetFunction.apply(null, call.argsList);
+        }
+      },eventHandlers:[],removeAllHandlersOnTarget:function(target, eventTypeString) {
+        for (var i = 0; i < JSEvents.eventHandlers.length; ++i) {
+          if (JSEvents.eventHandlers[i].target == target && 
+            (!eventTypeString || eventTypeString == JSEvents.eventHandlers[i].eventTypeString)) {
+             JSEvents._removeHandler(i--);
+           }
+        }
+      },_removeHandler:function(i) {
+        var h = JSEvents.eventHandlers[i];
+        h.target.removeEventListener(h.eventTypeString, h.eventListenerFunc, h.useCapture);
+        JSEvents.eventHandlers.splice(i, 1);
+      },registerOrRemoveHandler:function(eventHandler) {
+        var jsEventHandler = function jsEventHandler(event) {
+          // Increment nesting count for the event handler.
+          ++JSEvents.inEventHandler;
+          JSEvents.currentEventHandler = eventHandler;
+          // Process any old deferred calls the user has placed.
+          JSEvents.runDeferredCalls();
+          // Process the actual event, calls back to user C code handler.
+          eventHandler.handlerFunc(event);
+          // Process any new deferred calls that were placed right now from this event handler.
+          JSEvents.runDeferredCalls();
+          // Out of event handler - restore nesting count.
+          --JSEvents.inEventHandler;
+        };
+        
+        if (eventHandler.callbackfunc) {
+          eventHandler.eventListenerFunc = jsEventHandler;
+          eventHandler.target.addEventListener(eventHandler.eventTypeString, jsEventHandler, eventHandler.useCapture);
+          JSEvents.eventHandlers.push(eventHandler);
+          JSEvents.registerRemoveEventListeners();
+        } else {
+          for (var i = 0; i < JSEvents.eventHandlers.length; ++i) {
+            if (JSEvents.eventHandlers[i].target == eventHandler.target
+             && JSEvents.eventHandlers[i].eventTypeString == eventHandler.eventTypeString) {
+               JSEvents._removeHandler(i--);
+             }
+          }
+        }
+      },queueEventHandlerOnThread_iiii:function(targetThread, eventHandlerFunc, eventTypeId, eventData, userData) {
+        withStackSave(function() {
+          var varargs = stackAlloc(12);
+          HEAP32[((varargs)>>2)] = eventTypeId;
+          HEAP32[(((varargs)+(4))>>2)] = eventData;
+          HEAP32[(((varargs)+(8))>>2)] = userData;
+          _emscripten_dispatch_to_thread_(targetThread, 637534208, eventHandlerFunc, eventData, varargs);
+        });
+      },getTargetThreadForEventCallback:function(targetThread) {
+        switch (targetThread) {
+          case 1: return 0; // The event callback for the current event should be called on the main browser thread. (0 == don't proxy)
+          case 2: return PThread.currentProxiedOperationCallerThread; // The event callback for the current event should be backproxied to the thread that is registering the event.
+          default: return targetThread; // The event callback for the current event should be proxied to the given specific thread.
+        }
+      },getNodeNameForTarget:function(target) {
+        if (!target) return '';
+        if (target == window) return '#window';
+        if (target == screen) return '#screen';
+        return (target && target.nodeName) ? target.nodeName : '';
+      },fullscreenEnabled:function() {
+        return document.fullscreenEnabled
+        // Safari 13.0.3 on macOS Catalina 10.15.1 still ships with prefixed webkitFullscreenEnabled.
+        // TODO: If Safari at some point ships with unprefixed version, update the version check above.
+        || document.webkitFullscreenEnabled
+         ;
+      }};
+  
+  function stringToNewUTF8(jsString) {
+      var length = lengthBytesUTF8(jsString)+1;
+      var cString = _malloc(length);
+      stringToUTF8(jsString, cString, length);
+      return cString;
+    }
+  function _emscripten_set_offscreencanvas_size_on_target_thread_js(targetThread, targetCanvas, width, height) {
+      withStackSave(function() {
+        var varargs = stackAlloc(12);
+        var targetCanvasPtr = 0;
+        if (targetCanvas) {
+          targetCanvasPtr = stringToNewUTF8(targetCanvas);
+        }
+        HEAP32[((varargs)>>2)] = targetCanvasPtr;
+        HEAP32[(((varargs)+(4))>>2)] = width;
+        HEAP32[(((varargs)+(8))>>2)] = height;
+        // Note: If we are also a pthread, the call below could theoretically be done synchronously. However if the target pthread is waiting for a mutex from us, then
+        // these two threads will deadlock. At the moment, we'd like to consider that this kind of deadlock would be an Emscripten runtime bug, although if
+        // emscripten_set_canvas_element_size() was documented to require running an event in the queue of thread that owns the OffscreenCanvas, then that might be ok.
+        // (safer this way however)
+        _emscripten_dispatch_to_thread_(targetThread, 657457152, 0, targetCanvasPtr /* satellite data */, varargs);
+      });
+    }
+  function _emscripten_set_offscreencanvas_size_on_target_thread(targetThread, targetCanvas, width, height) {
+      targetCanvas = targetCanvas ? UTF8ToString(targetCanvas) : '';
+      _emscripten_set_offscreencanvas_size_on_target_thread_js(targetThread, targetCanvas, width, height);
+    }
+  
+  function maybeCStringToJsString(cString) {
+      // "cString > 2" checks if the input is a number, and isn't of the special
+      // values we accept here, EMSCRIPTEN_EVENT_TARGET_* (which map to 0, 1, 2).
+      // In other words, if cString > 2 then it's a pointer to a valid place in
+      // memory, and points to a C string.
+      return cString > 2 ? UTF8ToString(cString) : cString;
+    }
+  
+  var specialHTMLTargets = [0, typeof document !== 'undefined' ? document : 0, typeof window !== 'undefined' ? window : 0];
+  function findEventTarget(target) {
+      target = maybeCStringToJsString(target);
+      var domElement = specialHTMLTargets[target] || (typeof document !== 'undefined' ? document.querySelector(target) : undefined);
+      return domElement;
+    }
+  function findCanvasEventTarget(target) { return findEventTarget(target); }
+  function _emscripten_set_canvas_element_size_calling_thread(target, width, height) {
+      var canvas = findCanvasEventTarget(target);
+      if (!canvas) return -4;
+  
+      if (canvas.canvasSharedPtr) {
+        // N.B. We hold the canvasSharedPtr info structure as the authoritative source for specifying the size of a canvas
+        // since the actual canvas size changes are asynchronous if the canvas is owned by an OffscreenCanvas on another thread.
+        // Therefore when setting the size, eagerly set the size of the canvas on the calling thread here, though this thread
+        // might not be the one that actually ends up specifying the size, but the actual size change may be dispatched
+        // as an asynchronous event below.
+        HEAP32[((canvas.canvasSharedPtr)>>2)] = width;
+        HEAP32[(((canvas.canvasSharedPtr)+(4))>>2)] = height;
+      }
+  
+      if (canvas.offscreenCanvas || !canvas.controlTransferredOffscreen) {
+        if (canvas.offscreenCanvas) canvas = canvas.offscreenCanvas;
+        var autoResizeViewport = false;
+        if (canvas.GLctxObject && canvas.GLctxObject.GLctx) {
+          var prevViewport = canvas.GLctxObject.GLctx.getParameter(0xBA2 /* GL_VIEWPORT */);
+          // TODO: Perhaps autoResizeViewport should only be true if FBO 0 is currently active?
+          autoResizeViewport = (prevViewport[0] === 0 && prevViewport[1] === 0 && prevViewport[2] === canvas.width && prevViewport[3] === canvas.height);
+        }
+        canvas.width = width;
+        canvas.height = height;
+        if (autoResizeViewport) {
+          // TODO: Add -s CANVAS_RESIZE_SETS_GL_VIEWPORT=0/1 option (default=1). This is commonly done and several graphics engines depend on this,
+          // but this can be quite disruptive.
+          canvas.GLctxObject.GLctx.viewport(0, 0, width, height);
+        }
+      } else if (canvas.canvasSharedPtr) {
+        var targetThread = HEAP32[(((canvas.canvasSharedPtr)+(8))>>2)];
+        _emscripten_set_offscreencanvas_size_on_target_thread(targetThread, target, width, height);
+        return 1; // This will have to be done asynchronously
+      } else {
+        return -4;
+      }
+      return 0;
+    }
+  
+  
+  function _emscripten_set_canvas_element_size_main_thread(target, width, height) {
+    if (ENVIRONMENT_IS_PTHREAD)
+      return _emscripten_proxy_to_main_thread_js(6, 1, target, width, height);
+     return _emscripten_set_canvas_element_size_calling_thread(target, width, height); 
+  }
+  
+  function _emscripten_set_canvas_element_size(target, width, height) {
+      var canvas = findCanvasEventTarget(target);
+      if (canvas) {
+        return _emscripten_set_canvas_element_size_calling_thread(target, width, height);
+      } else {
+        return _emscripten_set_canvas_element_size_main_thread(target, width, height);
+      }
+    }
+
+  function _emscripten_set_current_thread_status(newStatus) {
+    }
+
   function _emscripten_unwind_to_js_event_loop() {
       throw 'unwind';
     }
+
+  function __webgl_enable_ANGLE_instanced_arrays(ctx) {
+      // Extension available in WebGL 1 from Firefox 26 and Google Chrome 30 onwards. Core feature in WebGL 2.
+      var ext = ctx.getExtension('ANGLE_instanced_arrays');
+      if (ext) {
+        ctx['vertexAttribDivisor'] = function(index, divisor) { ext['vertexAttribDivisorANGLE'](index, divisor); };
+        ctx['drawArraysInstanced'] = function(mode, first, count, primcount) { ext['drawArraysInstancedANGLE'](mode, first, count, primcount); };
+        ctx['drawElementsInstanced'] = function(mode, count, type, indices, primcount) { ext['drawElementsInstancedANGLE'](mode, count, type, indices, primcount); };
+        return 1;
+      }
+    }
+  
+  function __webgl_enable_OES_vertex_array_object(ctx) {
+      // Extension available in WebGL 1 from Firefox 25 and WebKit 536.28/desktop Safari 6.0.3 onwards. Core feature in WebGL 2.
+      var ext = ctx.getExtension('OES_vertex_array_object');
+      if (ext) {
+        ctx['createVertexArray'] = function() { return ext['createVertexArrayOES'](); };
+        ctx['deleteVertexArray'] = function(vao) { ext['deleteVertexArrayOES'](vao); };
+        ctx['bindVertexArray'] = function(vao) { ext['bindVertexArrayOES'](vao); };
+        ctx['isVertexArray'] = function(vao) { return ext['isVertexArrayOES'](vao); };
+        return 1;
+      }
+    }
+  
+  function __webgl_enable_WEBGL_draw_buffers(ctx) {
+      // Extension available in WebGL 1 from Firefox 28 onwards. Core feature in WebGL 2.
+      var ext = ctx.getExtension('WEBGL_draw_buffers');
+      if (ext) {
+        ctx['drawBuffers'] = function(n, bufs) { ext['drawBuffersWEBGL'](n, bufs); };
+        return 1;
+      }
+    }
+  
+  function __webgl_enable_WEBGL_multi_draw(ctx) {
+      // Closure is expected to be allowed to minify the '.multiDrawWebgl' property, so not accessing it quoted.
+      return !!(ctx.multiDrawWebgl = ctx.getExtension('WEBGL_multi_draw'));
+    }
+  var GL = {counter:1,buffers:[],programs:[],framebuffers:[],renderbuffers:[],textures:[],shaders:[],vaos:[],contexts:{},offscreenCanvases:{},queries:[],stringCache:{},unpackAlignment:4,recordError:function recordError(errorCode) {
+        if (!GL.lastError) {
+          GL.lastError = errorCode;
+        }
+      },getNewId:function(table) {
+        var ret = GL.counter++;
+        for (var i = table.length; i < ret; i++) {
+          table[i] = null;
+        }
+        return ret;
+      },getSource:function(shader, count, string, length) {
+        var source = '';
+        for (var i = 0; i < count; ++i) {
+          var len = length ? HEAP32[(((length)+(i*4))>>2)] : -1;
+          source += UTF8ToString(HEAP32[(((string)+(i*4))>>2)], len < 0 ? undefined : len);
+        }
+        return source;
+      },createContext:function(canvas, webGLContextAttributes) {
+  
+        // BUG: Workaround Safari WebGL issue: After successfully acquiring WebGL context on a canvas,
+        // calling .getContext() will always return that context independent of which 'webgl' or 'webgl2'
+        // context version was passed. See https://bugs.webkit.org/show_bug.cgi?id=222758 and
+        // https://github.com/emscripten-core/emscripten/issues/13295.
+        // TODO: Once the bug is fixed and shipped in Safari, adjust the Safari version field in above check.
+        if (!canvas.getContextSafariWebGL2Fixed) {
+          canvas.getContextSafariWebGL2Fixed = canvas.getContext;
+          canvas.getContext = function(ver, attrs) {
+            var gl = canvas.getContextSafariWebGL2Fixed(ver, attrs);
+            return ((ver == 'webgl') == (gl instanceof WebGLRenderingContext)) ? gl : null;
+          }
+        }
+  
+        var ctx = 
+          (canvas.getContext("webgl", webGLContextAttributes)
+            // https://caniuse.com/#feat=webgl
+            );
+  
+        if (!ctx) return 0;
+  
+        var handle = GL.registerContext(ctx, webGLContextAttributes);
+  
+        return handle;
+      },registerContext:function(ctx, webGLContextAttributes) {
+        // with pthreads a context is a location in memory with some synchronized data between threads
+        var handle = _malloc(8);
+        HEAP32[(((handle)+(4))>>2)] = _pthread_self(); // the thread pointer of the thread that owns the control of the context
+  
+        var context = {
+          handle: handle,
+          attributes: webGLContextAttributes,
+          version: webGLContextAttributes.majorVersion,
+          GLctx: ctx
+        };
+  
+        // Store the created context object so that we can access the context given a canvas without having to pass the parameters again.
+        if (ctx.canvas) ctx.canvas.GLctxObject = context;
+        GL.contexts[handle] = context;
+        if (typeof webGLContextAttributes.enableExtensionsByDefault === 'undefined' || webGLContextAttributes.enableExtensionsByDefault) {
+          GL.initExtensions(context);
+        }
+  
+        return handle;
+      },makeContextCurrent:function(contextHandle) {
+  
+        GL.currentContext = GL.contexts[contextHandle]; // Active Emscripten GL layer context object.
+        Module.ctx = GLctx = GL.currentContext && GL.currentContext.GLctx; // Active WebGL context object.
+        return !(contextHandle && !GLctx);
+      },getContext:function(contextHandle) {
+        return GL.contexts[contextHandle];
+      },deleteContext:function(contextHandle) {
+        if (GL.currentContext === GL.contexts[contextHandle]) GL.currentContext = null;
+        if (typeof JSEvents === 'object') JSEvents.removeAllHandlersOnTarget(GL.contexts[contextHandle].GLctx.canvas); // Release all JS event handlers on the DOM element that the GL context is associated with since the context is now deleted.
+        if (GL.contexts[contextHandle] && GL.contexts[contextHandle].GLctx.canvas) GL.contexts[contextHandle].GLctx.canvas.GLctxObject = undefined; // Make sure the canvas object no longer refers to the context object so there are no GC surprises.
+        _free(GL.contexts[contextHandle].handle);
+        GL.contexts[contextHandle] = null;
+      },initExtensions:function(context) {
+        // If this function is called without a specific context object, init the extensions of the currently active context.
+        if (!context) context = GL.currentContext;
+  
+        if (context.initExtensionsDone) return;
+        context.initExtensionsDone = true;
+  
+        var GLctx = context.GLctx;
+  
+        // Detect the presence of a few extensions manually, this GL interop layer itself will need to know if they exist.
+  
+        // Extensions that are only available in WebGL 1 (the calls will be no-ops if called on a WebGL 2 context active)
+        __webgl_enable_ANGLE_instanced_arrays(GLctx);
+        __webgl_enable_OES_vertex_array_object(GLctx);
+        __webgl_enable_WEBGL_draw_buffers(GLctx);
+  
+        {
+          GLctx.disjointTimerQueryExt = GLctx.getExtension("EXT_disjoint_timer_query");
+        }
+  
+        __webgl_enable_WEBGL_multi_draw(GLctx);
+  
+        // .getSupportedExtensions() can return null if context is lost, so coerce to empty array.
+        var exts = GLctx.getSupportedExtensions() || [];
+        exts.forEach(function(ext) {
+          // WEBGL_lose_context, WEBGL_debug_renderer_info and WEBGL_debug_shaders are not enabled by default.
+          if (!ext.includes('lose_context') && !ext.includes('debug')) {
+            // Call .getExtension() to enable that extension permanently.
+            GLctx.getExtension(ext);
+          }
+        });
+      }};
+  
+  var __emscripten_webgl_power_preferences = ['default', 'low-power', 'high-performance'];
+  function _emscripten_webgl_do_create_context(target, attributes) {
+      assert(attributes);
+      var a = attributes >> 2;
+      var powerPreference = HEAP32[a + (24>>2)];
+      var contextAttributes = {
+        'alpha': !!HEAP32[a + (0>>2)],
+        'depth': !!HEAP32[a + (4>>2)],
+        'stencil': !!HEAP32[a + (8>>2)],
+        'antialias': !!HEAP32[a + (12>>2)],
+        'premultipliedAlpha': !!HEAP32[a + (16>>2)],
+        'preserveDrawingBuffer': !!HEAP32[a + (20>>2)],
+        'powerPreference': __emscripten_webgl_power_preferences[powerPreference],
+        'failIfMajorPerformanceCaveat': !!HEAP32[a + (28>>2)],
+        // The following are not predefined WebGL context attributes in the WebGL specification, so the property names can be minified by Closure.
+        majorVersion: HEAP32[a + (32>>2)],
+        minorVersion: HEAP32[a + (36>>2)],
+        enableExtensionsByDefault: HEAP32[a + (40>>2)],
+        explicitSwapControl: HEAP32[a + (44>>2)],
+        proxyContextToMainThread: HEAP32[a + (48>>2)],
+        renderViaOffscreenBackBuffer: HEAP32[a + (52>>2)]
+      };
+  
+      var canvas = findCanvasEventTarget(target);
+  
+      if (!canvas) {
+        return 0;
+      }
+  
+      if (contextAttributes.explicitSwapControl) {
+        return 0;
+      }
+  
+      var contextHandle = GL.createContext(canvas, contextAttributes);
+      return contextHandle;
+    }
+  function _emscripten_webgl_create_context(a0,a1
+  ) {
+  return _emscripten_webgl_do_create_context(a0,a1);
+  }
 
   var ENV = {};
   
@@ -9907,7 +10538,7 @@ var ASM_CONSTS = {
       if (!getEnvStrings.strings) {
         // Default values.
         // Browser language detection #8751
-        var lang = ((typeof navigator == 'object' && navigator.languages && navigator.languages[0]) || 'C').replace('-', '_') + '.UTF-8';
+        var lang = ((typeof navigator === 'object' && navigator.languages && navigator.languages[0]) || 'C').replace('-', '_') + '.UTF-8';
         var env = {
           'USER': 'web_user',
           'LOGNAME': 'web_user',
@@ -9936,7 +10567,7 @@ var ASM_CONSTS = {
   
   function _environ_get(__environ, environ_buf) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(6, 1, __environ, environ_buf);
+      return _emscripten_proxy_to_main_thread_js(7, 1, __environ, environ_buf);
     
       var bufSize = 0;
       getEnvStrings().forEach(function(string, i) {
@@ -9953,7 +10584,7 @@ var ASM_CONSTS = {
   
   function _environ_sizes_get(penviron_count, penviron_buf_size) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(7, 1, penviron_count, penviron_buf_size);
+      return _emscripten_proxy_to_main_thread_js(8, 1, penviron_count, penviron_buf_size);
     
       var strings = getEnvStrings();
       HEAP32[((penviron_count)>>2)] = strings.length;
@@ -9971,15 +10602,14 @@ var ASM_CONSTS = {
   
   function _fd_close(fd) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(8, 1, fd);
-    
-  try {
+      return _emscripten_proxy_to_main_thread_js(9, 1, fd);
+    try {
   
       var stream = SYSCALLS.getStreamFromFD(fd);
       FS.close(stream);
       return 0;
     } catch (e) {
-    if (typeof FS == 'undefined' || !(e instanceof FS.ErrnoError)) throw e;
+    if (typeof FS === 'undefined' || !(e instanceof FS.ErrnoError)) throw e;
     return e.errno;
   }
   
@@ -9989,16 +10619,15 @@ var ASM_CONSTS = {
   
   function _fd_read(fd, iov, iovcnt, pnum) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(9, 1, fd, iov, iovcnt, pnum);
-    
-  try {
+      return _emscripten_proxy_to_main_thread_js(10, 1, fd, iov, iovcnt, pnum);
+    try {
   
       var stream = SYSCALLS.getStreamFromFD(fd);
       var num = SYSCALLS.doReadv(stream, iov, iovcnt);
       HEAP32[((pnum)>>2)] = num;
       return 0;
     } catch (e) {
-    if (typeof FS == 'undefined' || !(e instanceof FS.ErrnoError)) throw e;
+    if (typeof FS === 'undefined' || !(e instanceof FS.ErrnoError)) throw e;
     return e.errno;
   }
   
@@ -10006,11 +10635,10 @@ var ASM_CONSTS = {
   
 
   
-  function _fd_seek(fd, /** @type {!BigInt} */ offset_bigint, whence, newOffset) {
+  function _fd_seek(fd, offset_bigint, whence, newOffset) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(10, 1, fd, /** @type {!BigInt} */ offset_bigint, whence, newOffset);
-    
-  try {
+      return _emscripten_proxy_to_main_thread_js(11, 1, fd, offset_bigint, whence, newOffset);
+    try {
   
       var offset_low = Number(offset_bigint & BigInt(0xffffffff)) | 0, offset_high = Number(offset_bigint >> BigInt(32)) | 0;
       var stream = SYSCALLS.getStreamFromFD(fd);
@@ -10029,7 +10657,7 @@ var ASM_CONSTS = {
       if (stream.getdents && offset === 0 && whence === 0) stream.getdents = null; // reset readdir state
       return 0;
     } catch (e) {
-    if (typeof FS == 'undefined' || !(e instanceof FS.ErrnoError)) throw e;
+    if (typeof FS === 'undefined' || !(e instanceof FS.ErrnoError)) throw e;
     return e.errno;
   }
   
@@ -10039,9 +10667,8 @@ var ASM_CONSTS = {
   
   function _fd_write(fd, iov, iovcnt, pnum) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(11, 1, fd, iov, iovcnt, pnum);
-    
-  try {
+      return _emscripten_proxy_to_main_thread_js(12, 1, fd, iov, iovcnt, pnum);
+    try {
   
       ;
       var stream = SYSCALLS.getStreamFromFD(fd);
@@ -10049,7 +10676,7 @@ var ASM_CONSTS = {
       HEAP32[((pnum)>>2)] = num;
       return 0;
     } catch (e) {
-    if (typeof FS == 'undefined' || !(e instanceof FS.ErrnoError)) throw e;
+    if (typeof FS === 'undefined' || !(e instanceof FS.ErrnoError)) throw e;
     return e.errno;
   }
   
@@ -10067,7 +10694,7 @@ var ASM_CONSTS = {
   
   function _proc_exit(code) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(12, 1, code);
+      return _emscripten_proxy_to_main_thread_js(13, 1, code);
     
       procExit(code);
     
@@ -10177,7 +10804,7 @@ var ASM_CONSTS = {
       var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   
       function leadingSomething(value, digits, character) {
-        var str = typeof value == 'number' ? value.toString() : (value || '');
+        var str = typeof value === 'number' ? value.toString() : (value || '');
         while (str.length < digits) {
           str = character[0]+str;
         }
@@ -10320,8 +10947,23 @@ var ASM_CONSTS = {
           return date.tm_wday || 7;
         },
         '%U': function(date) {
-          var days = date.tm_yday + 7 - date.tm_wday;
-          return leadingNulls(Math.floor(days / 7), 2);
+          // Replaced by the week number of the year as a decimal number [00,53].
+          // The first Sunday of January is the first day of week 1;
+          // days in the new year before this are in week 0. [ tm_year, tm_wday, tm_yday]
+          var janFirst = new Date(date.tm_year+1900, 0, 1);
+          var firstSunday = janFirst.getDay() === 0 ? janFirst : __addDays(janFirst, 7-janFirst.getDay());
+          var endDate = new Date(date.tm_year+1900, date.tm_mon, date.tm_mday);
+  
+          // is target date after the first Sunday?
+          if (compareByDay(firstSunday, endDate) < 0) {
+            // calculate difference in days between first Sunday and endDate
+            var februaryFirstUntilEndMonth = __arraySum(__isLeapYear(endDate.getFullYear()) ? __MONTH_DAYS_LEAP : __MONTH_DAYS_REGULAR, endDate.getMonth()-1)-31;
+            var firstSundayUntilEndJanuary = 31-firstSunday.getDate();
+            var days = firstSundayUntilEndJanuary+februaryFirstUntilEndMonth+endDate.getDate();
+            return leadingNulls(Math.ceil(days/7), 2);
+          }
+  
+          return compareByDay(firstSunday, janFirst) === 0 ? '01': '00';
         },
         '%V': function(date) {
           // Replaced by the week number of the year (Monday as the first day of the week)
@@ -10329,35 +10971,54 @@ var ASM_CONSTS = {
           // or more days in the new year, then it is considered week 1.
           // Otherwise, it is the last week of the previous year, and the next week is week 1.
           // Both January 4th and the first Thursday of January are always in week 1. [ tm_year, tm_wday, tm_yday]
-          var val = Math.floor((date.tm_yday + 7 - (date.tm_wday + 6) % 7 ) / 7);
-          // If 1 Jan is just 1-3 days past Monday, the previous week
-          // is also in this year.
-          if ((date.tm_wday + 371 - date.tm_yday - 2) % 7 <= 2) {
-            val++;
+          var janFourthThisYear = new Date(date.tm_year+1900, 0, 4);
+          var janFourthNextYear = new Date(date.tm_year+1901, 0, 4);
+  
+          var firstWeekStartThisYear = getFirstWeekStartDate(janFourthThisYear);
+          var firstWeekStartNextYear = getFirstWeekStartDate(janFourthNextYear);
+  
+          var endDate = __addDays(new Date(date.tm_year+1900, 0, 1), date.tm_yday);
+  
+          if (compareByDay(endDate, firstWeekStartThisYear) < 0) {
+            // if given date is before this years first week, then it belongs to the 53rd week of last year
+            return '53';
           }
-          if (!val) {
-            val = 52;
-            // If 31 December of prev year a Thursday, or Friday of a
-            // leap year, then the prev year has 53 weeks.
-            var dec31 = (date.tm_wday + 7 - date.tm_yday - 1) % 7;
-            if (dec31 == 4 || (dec31 == 5 && __isLeapYear(date.tm_year%400-1))) {
-              val++;
-            }
-          } else if (val == 53) {
-            // If 1 January is not a Thursday, and not a Wednesday of a
-            // leap year, then this year has only 52 weeks.
-            var jan1 = (date.tm_wday + 371 - date.tm_yday) % 7;
-            if (jan1 != 4 && (jan1 != 3 || !__isLeapYear(date.tm_year)))
-              val = 1;
+  
+          if (compareByDay(firstWeekStartNextYear, endDate) <= 0) {
+            // if given date is after next years first week, then it belongs to the 01th week of next year
+            return '01';
           }
-          return leadingNulls(val, 2);
+  
+          // given date is in between CW 01..53 of this calendar year
+          var daysDifference;
+          if (firstWeekStartThisYear.getFullYear() < date.tm_year+1900) {
+            // first CW of this year starts last year
+            daysDifference = date.tm_yday+32-firstWeekStartThisYear.getDate()
+          } else {
+            // first CW of this year starts this year
+            daysDifference = date.tm_yday+1-firstWeekStartThisYear.getDate();
+          }
+          return leadingNulls(Math.ceil(daysDifference/7), 2);
         },
         '%w': function(date) {
           return date.tm_wday;
         },
         '%W': function(date) {
-          var days = date.tm_yday + 7 - ((date.tm_wday + 6) % 7);
-          return leadingNulls(Math.floor(days / 7), 2);
+          // Replaced by the week number of the year as a decimal number [00,53].
+          // The first Monday of January is the first day of week 1;
+          // days in the new year before this are in week 0. [ tm_year, tm_wday, tm_yday]
+          var janFirst = new Date(date.tm_year, 0, 1);
+          var firstMonday = janFirst.getDay() === 1 ? janFirst : __addDays(janFirst, janFirst.getDay() === 0 ? 1 : 7-janFirst.getDay()+1);
+          var endDate = new Date(date.tm_year+1900, date.tm_mon, date.tm_mday);
+  
+          // is target date after the first Monday?
+          if (compareByDay(firstMonday, endDate) < 0) {
+            var februaryFirstUntilEndMonth = __arraySum(__isLeapYear(endDate.getFullYear()) ? __MONTH_DAYS_LEAP : __MONTH_DAYS_REGULAR, endDate.getMonth()-1)-31;
+            var firstMondayUntilEndJanuary = 31-firstMonday.getDate();
+            var days = firstMondayUntilEndJanuary+februaryFirstUntilEndMonth+endDate.getDate();
+            return leadingNulls(Math.ceil(days/7), 2);
+          }
+          return compareByDay(firstMonday, janFirst) === 0 ? '01': '00';
         },
         '%y': function(date) {
           // Replaced by the last two digits of the year as a decimal number [00,99]. [ tm_year]
@@ -10384,16 +11045,11 @@ var ASM_CONSTS = {
           return '%';
         }
       };
-  
-      // Replace %% with a pair of NULLs (which cannot occur in a C string), then
-      // re-inject them after processing.
-      pattern = pattern.replace(/%%/g, '\0\0')
       for (var rule in EXPANSION_RULES_2) {
         if (pattern.includes(rule)) {
           pattern = pattern.replace(new RegExp(rule, 'g'), EXPANSION_RULES_2[rule](date));
         }
       }
-      pattern = pattern.replace(/\0\0/g, '%')
   
       var bytes = intArrayFromString(pattern, false);
       if (bytes.length > maxsize) {
@@ -10406,7 +11062,7 @@ var ASM_CONSTS = {
   function _strftime_l(s, maxsize, format, tm) {
       return _strftime(s, maxsize, format, tm); // no locale support yet
     }
-PThread.init();;
+if (!ENVIRONMENT_IS_PTHREAD) PThread.initMainThreadBlock();;
 
   var FSNode = /** @constructor */ function(parent, name, mode, rdev) {
     if (!parent) {
@@ -10577,10 +11233,11 @@ ERRNO_CODES = {
       'EOWNERDEAD': 62,
       'ESTRPIPE': 135,
     };;
+var GLctx;;
 
  // proxiedFunctionTable specifies the list of functions that can be called either synchronously or asynchronously from other threads in postMessage()d or internally queued events. This way a pthread in a Worker can synchronously access e.g. the DOM on the main thread.
 
-var proxiedFunctionTable = [null,exitOnMainThread,pthreadCreateProxied,___syscall_fcntl64,___syscall_ioctl,___syscall_openat,_environ_get,_environ_sizes_get,_fd_close,_fd_read,_fd_seek,_fd_write,_proc_exit];
+var proxiedFunctionTable = [null,exitOnMainThread,_atexit,___syscall_fcntl64,___syscall_ioctl,___syscall_open,_emscripten_set_canvas_element_size_main_thread,_environ_get,_environ_sizes_get,_fd_close,_fd_read,_fd_seek,_fd_write,_proc_exit];
 
 var ASSERTIONS = true;
 
@@ -10611,13 +11268,12 @@ function intArrayToString(array) {
 }
 
 
-function checkIncomingModuleAPI() {
-  ignoredModuleProp('fetchSettings');
-}
 var asmLibraryArg = {
   "__assert_fail": ___assert_fail,
   "__call_sighandler": ___call_sighandler,
+  "__clock_gettime": ___clock_gettime,
   "__cxa_allocate_exception": ___cxa_allocate_exception,
+  "__cxa_atexit": ___cxa_atexit,
   "__cxa_begin_catch": ___cxa_begin_catch,
   "__cxa_end_catch": ___cxa_end_catch,
   "__cxa_find_matching_catch_2": ___cxa_find_matching_catch_2,
@@ -10632,23 +11288,27 @@ var asmLibraryArg = {
   "__emscripten_init_main_thread_js": ___emscripten_init_main_thread_js,
   "__emscripten_thread_cleanup": ___emscripten_thread_cleanup,
   "__pthread_create_js": ___pthread_create_js,
+  "__pthread_detached_exit": ___pthread_detached_exit,
   "__resumeException": ___resumeException,
   "__syscall_fcntl64": ___syscall_fcntl64,
   "__syscall_ioctl": ___syscall_ioctl,
-  "__syscall_openat": ___syscall_openat,
-  "_emscripten_date_now": __emscripten_date_now,
+  "__syscall_open": ___syscall_open,
   "_emscripten_default_pthread_stack_size": __emscripten_default_pthread_stack_size,
-  "_emscripten_get_now_is_monotonic": __emscripten_get_now_is_monotonic,
-  "_emscripten_notify_proxying_queue": __emscripten_notify_proxying_queue,
-  "_emscripten_set_offscreencanvas_size": __emscripten_set_offscreencanvas_size,
+  "_emscripten_futex_wait_non_blocking": __emscripten_futex_wait_non_blocking,
+  "_emscripten_notify_thread_queue": __emscripten_notify_thread_queue,
   "abort": _abort,
+  "clock_gettime": _clock_gettime,
   "emscripten_asm_const_async_on_main_thread": _emscripten_asm_const_async_on_main_thread,
   "emscripten_check_blocking_allowed": _emscripten_check_blocking_allowed,
+  "emscripten_conditional_set_current_thread_status": _emscripten_conditional_set_current_thread_status,
   "emscripten_get_now": _emscripten_get_now,
   "emscripten_memcpy_big": _emscripten_memcpy_big,
   "emscripten_receive_on_main_thread_js": _emscripten_receive_on_main_thread_js,
   "emscripten_resize_heap": _emscripten_resize_heap,
+  "emscripten_set_canvas_element_size": _emscripten_set_canvas_element_size,
+  "emscripten_set_current_thread_status": _emscripten_set_current_thread_status,
   "emscripten_unwind_to_js_event_loop": _emscripten_unwind_to_js_event_loop,
+  "emscripten_webgl_create_context": _emscripten_webgl_create_context,
   "environ_get": _environ_get,
   "environ_sizes_get": _environ_sizes_get,
   "exit": _exit,
@@ -12937,31 +13597,31 @@ var _free = Module["_free"] = createExportWrapper("free");
 var _malloc = Module["_malloc"] = createExportWrapper("malloc");
 
 /** @type {function(...*):?} */
-var _emscripten_tls_init = Module["_emscripten_tls_init"] = createExportWrapper("emscripten_tls_init");
+var _fflush = Module["_fflush"] = createExportWrapper("fflush");
 
 /** @type {function(...*):?} */
-var _emscripten_builtin_memalign = Module["_emscripten_builtin_memalign"] = createExportWrapper("emscripten_builtin_memalign");
+var _emscripten_tls_init = Module["_emscripten_tls_init"] = createExportWrapper("emscripten_tls_init");
 
 /** @type {function(...*):?} */
 var ___errno_location = Module["___errno_location"] = createExportWrapper("__errno_location");
 
 /** @type {function(...*):?} */
-var ___stdio_exit = Module["___stdio_exit"] = createExportWrapper("__stdio_exit");
-
-/** @type {function(...*):?} */
 var __emscripten_thread_init = Module["__emscripten_thread_init"] = createExportWrapper("_emscripten_thread_init");
 
 /** @type {function(...*):?} */
-var __emscripten_thread_crashed = Module["__emscripten_thread_crashed"] = createExportWrapper("_emscripten_thread_crashed");
-
-/** @type {function(...*):?} */
-var _emscripten_main_thread_process_queued_calls = Module["_emscripten_main_thread_process_queued_calls"] = createExportWrapper("emscripten_main_thread_process_queued_calls");
+var _emscripten_current_thread_process_queued_calls = Module["_emscripten_current_thread_process_queued_calls"] = createExportWrapper("emscripten_current_thread_process_queued_calls");
 
 /** @type {function(...*):?} */
 var _emscripten_main_browser_thread_id = Module["_emscripten_main_browser_thread_id"] = createExportWrapper("emscripten_main_browser_thread_id");
 
 /** @type {function(...*):?} */
-var _emscripten_proxy_execute_queue = Module["_emscripten_proxy_execute_queue"] = createExportWrapper("emscripten_proxy_execute_queue");
+var _emscripten_sync_run_in_main_thread_2 = Module["_emscripten_sync_run_in_main_thread_2"] = createExportWrapper("emscripten_sync_run_in_main_thread_2");
+
+/** @type {function(...*):?} */
+var _emscripten_sync_run_in_main_thread_4 = Module["_emscripten_sync_run_in_main_thread_4"] = createExportWrapper("emscripten_sync_run_in_main_thread_4");
+
+/** @type {function(...*):?} */
+var _emscripten_main_thread_process_queued_calls = Module["_emscripten_main_thread_process_queued_calls"] = createExportWrapper("emscripten_main_thread_process_queued_calls");
 
 /** @type {function(...*):?} */
 var _emscripten_run_in_main_runtime_thread_js = Module["_emscripten_run_in_main_runtime_thread_js"] = createExportWrapper("emscripten_run_in_main_runtime_thread_js");
@@ -12970,20 +13630,18 @@ var _emscripten_run_in_main_runtime_thread_js = Module["_emscripten_run_in_main_
 var _emscripten_dispatch_to_thread_ = Module["_emscripten_dispatch_to_thread_"] = createExportWrapper("emscripten_dispatch_to_thread_");
 
 /** @type {function(...*):?} */
-var _emscripten_stack_get_base = Module["_emscripten_stack_get_base"] = function() {
-  return (_emscripten_stack_get_base = Module["_emscripten_stack_get_base"] = Module["asm"]["emscripten_stack_get_base"]).apply(null, arguments);
-};
+var __emscripten_thread_free_data = Module["__emscripten_thread_free_data"] = createExportWrapper("_emscripten_thread_free_data");
+
+/** @type {function(...*):?} */
+var __emscripten_thread_exit = Module["__emscripten_thread_exit"] = createExportWrapper("_emscripten_thread_exit");
+
+/** @type {function(...*):?} */
+var _memalign = Module["_memalign"] = createExportWrapper("memalign");
 
 /** @type {function(...*):?} */
 var _emscripten_stack_get_end = Module["_emscripten_stack_get_end"] = function() {
   return (_emscripten_stack_get_end = Module["_emscripten_stack_get_end"] = Module["asm"]["emscripten_stack_get_end"]).apply(null, arguments);
 };
-
-/** @type {function(...*):?} */
-var __emscripten_thread_free_data = Module["__emscripten_thread_free_data"] = createExportWrapper("_emscripten_thread_free_data");
-
-/** @type {function(...*):?} */
-var __emscripten_thread_exit = Module["__emscripten_thread_exit"] = createExportWrapper("_emscripten_thread_exit");
 
 /** @type {function(...*):?} */
 var _setThrew = Module["_setThrew"] = createExportWrapper("setThrew");
@@ -13021,758 +13679,754 @@ var ___cxa_can_catch = Module["___cxa_can_catch"] = createExportWrapper("__cxa_c
 /** @type {function(...*):?} */
 var ___cxa_is_pointer_type = Module["___cxa_is_pointer_type"] = createExportWrapper("__cxa_is_pointer_type");
 
-var __emscripten_allow_main_runtime_queued_calls = Module['__emscripten_allow_main_runtime_queued_calls'] = 403336;
+var __emscripten_main_thread_futex = Module['__emscripten_main_thread_futex'] = 406524;
+var __emscripten_allow_main_runtime_queued_calls = Module['__emscripten_allow_main_runtime_queued_calls'] = 403272;
 function invoke_iii(index,a1,a2) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)(a1,a2);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)(a1,a2);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_viii(index,a1,a2,a3) {
-  var sp = stackSave();
-  try {
-    getWasmTableEntry(index)(a1,a2,a3);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  getWasmTableEntry(index)(a1,a2,a3);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_vi(index,a1) {
-  var sp = stackSave();
-  try {
-    getWasmTableEntry(index)(a1);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  getWasmTableEntry(index)(a1);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_ii(index,a1) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)(a1);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)(a1);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_iiii(index,a1,a2,a3) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)(a1,a2,a3);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)(a1,a2,a3);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_vii(index,a1,a2) {
-  var sp = stackSave();
-  try {
-    getWasmTableEntry(index)(a1,a2);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  getWasmTableEntry(index)(a1,a2);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_i(index) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)();
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)();
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_iiiii(index,a1,a2,a3,a4) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)(a1,a2,a3,a4);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)(a1,a2,a3,a4);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_iiiiii(index,a1,a2,a3,a4,a5) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)(a1,a2,a3,a4,a5);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)(a1,a2,a3,a4,a5);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_v(index) {
-  var sp = stackSave();
-  try {
-    getWasmTableEntry(index)();
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  getWasmTableEntry(index)();
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_viiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8) {
-  var sp = stackSave();
-  try {
-    getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6,a7,a8);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6,a7,a8);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_iiiiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8,a9) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6,a7,a8,a9);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6,a7,a8,a9);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_iiiiiii(index,a1,a2,a3,a4,a5,a6) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_viiiii(index,a1,a2,a3,a4,a5) {
-  var sp = stackSave();
-  try {
-    getWasmTableEntry(index)(a1,a2,a3,a4,a5);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  getWasmTableEntry(index)(a1,a2,a3,a4,a5);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_viiiiiii(index,a1,a2,a3,a4,a5,a6,a7) {
-  var sp = stackSave();
-  try {
-    getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6,a7);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6,a7);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_viiiiii(index,a1,a2,a3,a4,a5,a6) {
-  var sp = stackSave();
-  try {
-    getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_viiii(index,a1,a2,a3,a4) {
-  var sp = stackSave();
-  try {
-    getWasmTableEntry(index)(a1,a2,a3,a4);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  getWasmTableEntry(index)(a1,a2,a3,a4);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_iiiiiiii(index,a1,a2,a3,a4,a5,a6,a7) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6,a7);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6,a7);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_iiiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6,a7,a8);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6,a7,a8);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_vid(index,a1,a2) {
-  var sp = stackSave();
-  try {
-    getWasmTableEntry(index)(a1,a2);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  getWasmTableEntry(index)(a1,a2);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_id(index,a1) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)(a1);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)(a1);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_dii(index,a1,a2) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)(a1,a2);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)(a1,a2);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_viid(index,a1,a2,a3) {
-  var sp = stackSave();
-  try {
-    getWasmTableEntry(index)(a1,a2,a3);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  getWasmTableEntry(index)(a1,a2,a3);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_viij(index,a1,a2,a3) {
-  var sp = stackSave();
-  try {
-    getWasmTableEntry(index)(a1,a2,a3);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  getWasmTableEntry(index)(a1,a2,a3);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_viji(index,a1,a2,a3) {
-  var sp = stackSave();
-  try {
-    getWasmTableEntry(index)(a1,a2,a3);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  getWasmTableEntry(index)(a1,a2,a3);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_jii(index,a1,a2) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)(a1,a2);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-    return BigInt(0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)(a1,a2);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_iiij(index,a1,a2,a3) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)(a1,a2,a3);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)(a1,a2,a3);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_viiiid(index,a1,a2,a3,a4,a5) {
-  var sp = stackSave();
-  try {
-    getWasmTableEntry(index)(a1,a2,a3,a4,a5);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  getWasmTableEntry(index)(a1,a2,a3,a4,a5);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_iiid(index,a1,a2,a3) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)(a1,a2,a3);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)(a1,a2,a3);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_iiji(index,a1,a2,a3) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)(a1,a2,a3);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)(a1,a2,a3);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_iiiiiiiiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_jiij(index,a1,a2,a3) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)(a1,a2,a3);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-    return BigInt(0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)(a1,a2,a3);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_viiiiiji(index,a1,a2,a3,a4,a5,a6,a7) {
-  var sp = stackSave();
-  try {
-    getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6,a7);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6,a7);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_iiiiiiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_iij(index,a1,a2) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)(a1,a2);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)(a1,a2);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_iid(index,a1,a2) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)(a1,a2);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)(a1,a2);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_j(index) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)();
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-    return BigInt(0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)();
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_viiiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8,a9) {
-  var sp = stackSave();
-  try {
-    getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6,a7,a8,a9);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6,a7,a8,a9);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_viiiiiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11) {
-  var sp = stackSave();
-  try {
-    getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_ji(index,a1) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)(a1);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-    return BigInt(0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)(a1);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_diid(index,a1,a2,a3) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)(a1,a2,a3);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)(a1,a2,a3);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_diiid(index,a1,a2,a3,a4) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)(a1,a2,a3,a4);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)(a1,a2,a3,a4);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_diii(index,a1,a2,a3) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)(a1,a2,a3);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)(a1,a2,a3);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_di(index,a1) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)(a1);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)(a1);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_viiiiiiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12) {
-  var sp = stackSave();
-  try {
-    getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_viiiiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10) {
-  var sp = stackSave();
-  try {
-    getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_viiid(index,a1,a2,a3,a4) {
-  var sp = stackSave();
-  try {
-    getWasmTableEntry(index)(a1,a2,a3,a4);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  getWasmTableEntry(index)(a1,a2,a3,a4);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_vidii(index,a1,a2,a3,a4) {
-  var sp = stackSave();
-  try {
-    getWasmTableEntry(index)(a1,a2,a3,a4);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  getWasmTableEntry(index)(a1,a2,a3,a4);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_iiiiiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_fiiii(index,a1,a2,a3,a4) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)(a1,a2,a3,a4);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)(a1,a2,a3,a4);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_viidi(index,a1,a2,a3,a4) {
-  var sp = stackSave();
-  try {
-    getWasmTableEntry(index)(a1,a2,a3,a4);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  getWasmTableEntry(index)(a1,a2,a3,a4);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_viiji(index,a1,a2,a3,a4) {
-  var sp = stackSave();
-  try {
-    getWasmTableEntry(index)(a1,a2,a3,a4);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  getWasmTableEntry(index)(a1,a2,a3,a4);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_vij(index,a1,a2) {
-  var sp = stackSave();
-  try {
-    getWasmTableEntry(index)(a1,a2);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  getWasmTableEntry(index)(a1,a2);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_fii(index,a1,a2) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)(a1,a2);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)(a1,a2);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_iijii(index,a1,a2,a3,a4) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)(a1,a2,a3,a4);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)(a1,a2,a3,a4);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_viijii(index,a1,a2,a3,a4,a5) {
-  var sp = stackSave();
-  try {
-    getWasmTableEntry(index)(a1,a2,a3,a4,a5);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  getWasmTableEntry(index)(a1,a2,a3,a4,a5);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_viiiiiiiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13) {
-  var sp = stackSave();
-  try {
-    getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_iiiiij(index,a1,a2,a3,a4,a5) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)(a1,a2,a3,a4,a5);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)(a1,a2,a3,a4,a5);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_iiiiid(index,a1,a2,a3,a4,a5) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)(a1,a2,a3,a4,a5);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)(a1,a2,a3,a4,a5);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_jiiii(index,a1,a2,a3,a4) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)(a1,a2,a3,a4);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-    return BigInt(0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)(a1,a2,a3,a4);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_iiiiiiiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_fiii(index,a1,a2,a3) {
-  var sp = stackSave();
-  try {
-    return getWasmTableEntry(index)(a1,a2,a3);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  return getWasmTableEntry(index)(a1,a2,a3);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_viiiiiiiiiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15) {
-  var sp = stackSave();
-  try {
-    getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_vifi(index,a1,a2,a3) {
-  var sp = stackSave();
-  try {
-    getWasmTableEntry(index)(a1,a2,a3);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  getWasmTableEntry(index)(a1,a2,a3);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_viiiif(index,a1,a2,a3,a4,a5) {
-  var sp = stackSave();
-  try {
-    getWasmTableEntry(index)(a1,a2,a3,a4,a5);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  getWasmTableEntry(index)(a1,a2,a3,a4,a5);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_vidi(index,a1,a2,a3) {
-  var sp = stackSave();
-  try {
-    getWasmTableEntry(index)(a1,a2,a3);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  getWasmTableEntry(index)(a1,a2,a3);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_viijji(index,a1,a2,a3,a4,a5) {
-  var sp = stackSave();
-  try {
-    getWasmTableEntry(index)(a1,a2,a3,a4,a5);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  getWasmTableEntry(index)(a1,a2,a3,a4,a5);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 function invoke_viiiiijj(index,a1,a2,a3,a4,a5,a6,a7) {
-  var sp = stackSave();
-  try {
-    getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6,a7);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
+var sp = stackSave();
+try {
+  getWasmTableEntry(index)(a1,a2,a3,a4,a5,a6,a7);
+} catch(e) {
+  stackRestore(sp);
+  if (e !== e+0 && e !== 'longjmp') throw e;
+  _setThrew(1, 0);
+}
 }
 
 
@@ -13781,239 +14435,251 @@ function invoke_viiiiijj(index,a1,a2,a3,a4,a5,a6,a7) {
 // === Auto-generated postamble setup entry stuff ===
 
 Module["intArrayFromString"] = intArrayFromString;
-unexportedRuntimeFunction('intArrayToString', false);
+if (!Object.getOwnPropertyDescriptor(Module, "intArrayToString")) Module["intArrayToString"] = function() { abort("'intArrayToString' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
 Module["ccall"] = ccall;
-unexportedRuntimeFunction('cwrap', false);
-unexportedRuntimeFunction('setValue', false);
-unexportedRuntimeFunction('getValue', false);
+if (!Object.getOwnPropertyDescriptor(Module, "cwrap")) Module["cwrap"] = function() { abort("'cwrap' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "setValue")) Module["setValue"] = function() { abort("'setValue' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "getValue")) Module["getValue"] = function() { abort("'getValue' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
 Module["allocate"] = allocate;
-unexportedRuntimeFunction('UTF8ArrayToString', false);
+if (!Object.getOwnPropertyDescriptor(Module, "UTF8ArrayToString")) Module["UTF8ArrayToString"] = function() { abort("'UTF8ArrayToString' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
 Module["UTF8ToString"] = UTF8ToString;
-unexportedRuntimeFunction('stringToUTF8Array', false);
-unexportedRuntimeFunction('stringToUTF8', false);
-unexportedRuntimeFunction('lengthBytesUTF8', false);
-unexportedRuntimeFunction('stackTrace', false);
-unexportedRuntimeFunction('addOnPreRun', false);
-unexportedRuntimeFunction('addOnInit', false);
-unexportedRuntimeFunction('addOnPreMain', false);
-unexportedRuntimeFunction('addOnExit', false);
-unexportedRuntimeFunction('addOnPostRun', false);
-unexportedRuntimeFunction('writeStringToMemory', false);
-unexportedRuntimeFunction('writeArrayToMemory', false);
-unexportedRuntimeFunction('writeAsciiToMemory', false);
-unexportedRuntimeFunction('addRunDependency', true);
-unexportedRuntimeFunction('removeRunDependency', true);
-unexportedRuntimeFunction('FS_createFolder', false);
-unexportedRuntimeFunction('FS_createPath', true);
-unexportedRuntimeFunction('FS_createDataFile', true);
-unexportedRuntimeFunction('FS_createPreloadedFile', true);
-unexportedRuntimeFunction('FS_createLazyFile', true);
-unexportedRuntimeFunction('FS_createLink', false);
-unexportedRuntimeFunction('FS_createDevice', true);
-unexportedRuntimeFunction('FS_unlink', true);
-unexportedRuntimeFunction('getLEB', false);
-unexportedRuntimeFunction('getFunctionTables', false);
-unexportedRuntimeFunction('alignFunctionTables', false);
-unexportedRuntimeFunction('registerFunctions', false);
-unexportedRuntimeFunction('addFunction', false);
-unexportedRuntimeFunction('removeFunction', false);
-unexportedRuntimeFunction('prettyPrint', false);
-unexportedRuntimeFunction('dynCall', false);
-unexportedRuntimeFunction('getCompilerSetting', false);
-unexportedRuntimeFunction('print', false);
-unexportedRuntimeFunction('printErr', false);
-unexportedRuntimeFunction('getTempRet0', false);
-unexportedRuntimeFunction('setTempRet0', false);
-unexportedRuntimeFunction('callMain', false);
-unexportedRuntimeFunction('abort', false);
+if (!Object.getOwnPropertyDescriptor(Module, "stringToUTF8Array")) Module["stringToUTF8Array"] = function() { abort("'stringToUTF8Array' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "stringToUTF8")) Module["stringToUTF8"] = function() { abort("'stringToUTF8' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "lengthBytesUTF8")) Module["lengthBytesUTF8"] = function() { abort("'lengthBytesUTF8' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "stackTrace")) Module["stackTrace"] = function() { abort("'stackTrace' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "addOnPreRun")) Module["addOnPreRun"] = function() { abort("'addOnPreRun' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "addOnInit")) Module["addOnInit"] = function() { abort("'addOnInit' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "addOnPreMain")) Module["addOnPreMain"] = function() { abort("'addOnPreMain' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "addOnExit")) Module["addOnExit"] = function() { abort("'addOnExit' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "addOnPostRun")) Module["addOnPostRun"] = function() { abort("'addOnPostRun' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "writeStringToMemory")) Module["writeStringToMemory"] = function() { abort("'writeStringToMemory' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "writeArrayToMemory")) Module["writeArrayToMemory"] = function() { abort("'writeArrayToMemory' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "writeAsciiToMemory")) Module["writeAsciiToMemory"] = function() { abort("'writeAsciiToMemory' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "addRunDependency")) Module["addRunDependency"] = function() { abort("'addRunDependency' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ). Alternatively, forcing filesystem support (-s FORCE_FILESYSTEM=1) can export this for you") };
+if (!Object.getOwnPropertyDescriptor(Module, "removeRunDependency")) Module["removeRunDependency"] = function() { abort("'removeRunDependency' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ). Alternatively, forcing filesystem support (-s FORCE_FILESYSTEM=1) can export this for you") };
+if (!Object.getOwnPropertyDescriptor(Module, "FS_createFolder")) Module["FS_createFolder"] = function() { abort("'FS_createFolder' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "FS_createPath")) Module["FS_createPath"] = function() { abort("'FS_createPath' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ). Alternatively, forcing filesystem support (-s FORCE_FILESYSTEM=1) can export this for you") };
+if (!Object.getOwnPropertyDescriptor(Module, "FS_createDataFile")) Module["FS_createDataFile"] = function() { abort("'FS_createDataFile' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ). Alternatively, forcing filesystem support (-s FORCE_FILESYSTEM=1) can export this for you") };
+if (!Object.getOwnPropertyDescriptor(Module, "FS_createPreloadedFile")) Module["FS_createPreloadedFile"] = function() { abort("'FS_createPreloadedFile' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ). Alternatively, forcing filesystem support (-s FORCE_FILESYSTEM=1) can export this for you") };
+if (!Object.getOwnPropertyDescriptor(Module, "FS_createLazyFile")) Module["FS_createLazyFile"] = function() { abort("'FS_createLazyFile' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ). Alternatively, forcing filesystem support (-s FORCE_FILESYSTEM=1) can export this for you") };
+if (!Object.getOwnPropertyDescriptor(Module, "FS_createLink")) Module["FS_createLink"] = function() { abort("'FS_createLink' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "FS_createDevice")) Module["FS_createDevice"] = function() { abort("'FS_createDevice' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ). Alternatively, forcing filesystem support (-s FORCE_FILESYSTEM=1) can export this for you") };
+if (!Object.getOwnPropertyDescriptor(Module, "FS_unlink")) Module["FS_unlink"] = function() { abort("'FS_unlink' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ). Alternatively, forcing filesystem support (-s FORCE_FILESYSTEM=1) can export this for you") };
+if (!Object.getOwnPropertyDescriptor(Module, "getLEB")) Module["getLEB"] = function() { abort("'getLEB' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "getFunctionTables")) Module["getFunctionTables"] = function() { abort("'getFunctionTables' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "alignFunctionTables")) Module["alignFunctionTables"] = function() { abort("'alignFunctionTables' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "registerFunctions")) Module["registerFunctions"] = function() { abort("'registerFunctions' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "addFunction")) Module["addFunction"] = function() { abort("'addFunction' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "removeFunction")) Module["removeFunction"] = function() { abort("'removeFunction' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "getFuncWrapper")) Module["getFuncWrapper"] = function() { abort("'getFuncWrapper' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "prettyPrint")) Module["prettyPrint"] = function() { abort("'prettyPrint' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "dynCall")) Module["dynCall"] = function() { abort("'dynCall' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "getCompilerSetting")) Module["getCompilerSetting"] = function() { abort("'getCompilerSetting' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "print")) Module["print"] = function() { abort("'print' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "printErr")) Module["printErr"] = function() { abort("'printErr' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "getTempRet0")) Module["getTempRet0"] = function() { abort("'getTempRet0' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "setTempRet0")) Module["setTempRet0"] = function() { abort("'setTempRet0' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "callMain")) Module["callMain"] = function() { abort("'callMain' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "abort")) Module["abort"] = function() { abort("'abort' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
 Module["keepRuntimeAlive"] = keepRuntimeAlive;
-unexportedRuntimeFunction('ptrToString', false);
-unexportedRuntimeFunction('zeroMemory', false);
-unexportedRuntimeFunction('stringToNewUTF8', false);
-unexportedRuntimeFunction('abortOnCannotGrowMemory', false);
-unexportedRuntimeFunction('emscripten_realloc_buffer', false);
-unexportedRuntimeFunction('ENV', false);
-unexportedRuntimeFunction('ERRNO_CODES', false);
-unexportedRuntimeFunction('ERRNO_MESSAGES', false);
-unexportedRuntimeFunction('setErrNo', false);
-unexportedRuntimeFunction('inetPton4', false);
-unexportedRuntimeFunction('inetNtop4', false);
-unexportedRuntimeFunction('inetPton6', false);
-unexportedRuntimeFunction('inetNtop6', false);
-unexportedRuntimeFunction('readSockaddr', false);
-unexportedRuntimeFunction('writeSockaddr', false);
-unexportedRuntimeFunction('DNS', false);
-unexportedRuntimeFunction('getHostByName', false);
-unexportedRuntimeFunction('Protocols', false);
-unexportedRuntimeFunction('Sockets', false);
-unexportedRuntimeFunction('getRandomDevice', false);
-unexportedRuntimeFunction('traverseStack', false);
-unexportedRuntimeFunction('UNWIND_CACHE', false);
-unexportedRuntimeFunction('convertPCtoSourceLocation', false);
-unexportedRuntimeFunction('readAsmConstArgsArray', false);
-unexportedRuntimeFunction('readAsmConstArgs', false);
-unexportedRuntimeFunction('mainThreadEM_ASM', false);
-unexportedRuntimeFunction('jstoi_q', false);
-unexportedRuntimeFunction('jstoi_s', false);
-unexportedRuntimeFunction('getExecutableName', false);
-unexportedRuntimeFunction('listenOnce', false);
-unexportedRuntimeFunction('autoResumeAudioContext', false);
-unexportedRuntimeFunction('dynCall', false);
-unexportedRuntimeFunction('handleException', false);
-unexportedRuntimeFunction('runtimeKeepalivePush', false);
-unexportedRuntimeFunction('runtimeKeepalivePop', false);
-unexportedRuntimeFunction('callUserCallback', false);
-unexportedRuntimeFunction('maybeExit', false);
-unexportedRuntimeFunction('safeSetTimeout', false);
-unexportedRuntimeFunction('asmjsMangle', false);
-unexportedRuntimeFunction('asyncLoad', false);
-unexportedRuntimeFunction('alignMemory', false);
-unexportedRuntimeFunction('mmapAlloc', false);
-unexportedRuntimeFunction('reallyNegative', false);
-unexportedRuntimeFunction('unSign', false);
-unexportedRuntimeFunction('reSign', false);
-unexportedRuntimeFunction('formatString', false);
-unexportedRuntimeFunction('PATH', false);
-unexportedRuntimeFunction('PATH_FS', false);
-unexportedRuntimeFunction('SYSCALLS', false);
-unexportedRuntimeFunction('getSocketFromFD', false);
-unexportedRuntimeFunction('getSocketAddress', false);
-unexportedRuntimeFunction('JSEvents', false);
-unexportedRuntimeFunction('registerKeyEventCallback', false);
-unexportedRuntimeFunction('specialHTMLTargets', false);
-unexportedRuntimeFunction('maybeCStringToJsString', false);
-unexportedRuntimeFunction('findEventTarget', false);
-unexportedRuntimeFunction('findCanvasEventTarget', false);
-unexportedRuntimeFunction('getBoundingClientRect', false);
-unexportedRuntimeFunction('fillMouseEventData', false);
-unexportedRuntimeFunction('registerMouseEventCallback', false);
-unexportedRuntimeFunction('registerWheelEventCallback', false);
-unexportedRuntimeFunction('registerUiEventCallback', false);
-unexportedRuntimeFunction('registerFocusEventCallback', false);
-unexportedRuntimeFunction('fillDeviceOrientationEventData', false);
-unexportedRuntimeFunction('registerDeviceOrientationEventCallback', false);
-unexportedRuntimeFunction('fillDeviceMotionEventData', false);
-unexportedRuntimeFunction('registerDeviceMotionEventCallback', false);
-unexportedRuntimeFunction('screenOrientation', false);
-unexportedRuntimeFunction('fillOrientationChangeEventData', false);
-unexportedRuntimeFunction('registerOrientationChangeEventCallback', false);
-unexportedRuntimeFunction('fillFullscreenChangeEventData', false);
-unexportedRuntimeFunction('registerFullscreenChangeEventCallback', false);
-unexportedRuntimeFunction('registerRestoreOldStyle', false);
-unexportedRuntimeFunction('hideEverythingExceptGivenElement', false);
-unexportedRuntimeFunction('restoreHiddenElements', false);
-unexportedRuntimeFunction('setLetterbox', false);
-unexportedRuntimeFunction('currentFullscreenStrategy', false);
-unexportedRuntimeFunction('restoreOldWindowedStyle', false);
-unexportedRuntimeFunction('softFullscreenResizeWebGLRenderTarget', false);
-unexportedRuntimeFunction('doRequestFullscreen', false);
-unexportedRuntimeFunction('fillPointerlockChangeEventData', false);
-unexportedRuntimeFunction('registerPointerlockChangeEventCallback', false);
-unexportedRuntimeFunction('registerPointerlockErrorEventCallback', false);
-unexportedRuntimeFunction('requestPointerLock', false);
-unexportedRuntimeFunction('fillVisibilityChangeEventData', false);
-unexportedRuntimeFunction('registerVisibilityChangeEventCallback', false);
-unexportedRuntimeFunction('registerTouchEventCallback', false);
-unexportedRuntimeFunction('fillGamepadEventData', false);
-unexportedRuntimeFunction('registerGamepadEventCallback', false);
-unexportedRuntimeFunction('registerBeforeUnloadEventCallback', false);
-unexportedRuntimeFunction('fillBatteryEventData', false);
-unexportedRuntimeFunction('battery', false);
-unexportedRuntimeFunction('registerBatteryEventCallback', false);
-unexportedRuntimeFunction('setCanvasElementSize', false);
-unexportedRuntimeFunction('getCanvasElementSize', false);
-unexportedRuntimeFunction('demangle', false);
-unexportedRuntimeFunction('demangleAll', false);
-unexportedRuntimeFunction('jsStackTrace', false);
-unexportedRuntimeFunction('stackTrace', false);
-unexportedRuntimeFunction('getEnvStrings', false);
-unexportedRuntimeFunction('checkWasiClock', false);
-unexportedRuntimeFunction('writeI53ToI64', false);
-unexportedRuntimeFunction('writeI53ToI64Clamped', false);
-unexportedRuntimeFunction('writeI53ToI64Signaling', false);
-unexportedRuntimeFunction('writeI53ToU64Clamped', false);
-unexportedRuntimeFunction('writeI53ToU64Signaling', false);
-unexportedRuntimeFunction('readI53FromI64', false);
-unexportedRuntimeFunction('readI53FromU64', false);
-unexportedRuntimeFunction('convertI32PairToI53', false);
-unexportedRuntimeFunction('convertU32PairToI53', false);
-unexportedRuntimeFunction('dlopenMissingError', false);
-unexportedRuntimeFunction('setImmediateWrapped', false);
-unexportedRuntimeFunction('clearImmediateWrapped', false);
-unexportedRuntimeFunction('polyfillSetImmediate', false);
-unexportedRuntimeFunction('uncaughtExceptionCount', false);
-unexportedRuntimeFunction('exceptionLast', false);
-unexportedRuntimeFunction('exceptionCaught', false);
-unexportedRuntimeFunction('ExceptionInfo', false);
-unexportedRuntimeFunction('exception_addRef', false);
-unexportedRuntimeFunction('exception_decRef', false);
-unexportedRuntimeFunction('formatException', false);
-unexportedRuntimeFunction('Browser', false);
-unexportedRuntimeFunction('setMainLoop', false);
-unexportedRuntimeFunction('wget', false);
+if (!Object.getOwnPropertyDescriptor(Module, "zeroMemory")) Module["zeroMemory"] = function() { abort("'zeroMemory' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "stringToNewUTF8")) Module["stringToNewUTF8"] = function() { abort("'stringToNewUTF8' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "setFileTime")) Module["setFileTime"] = function() { abort("'setFileTime' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "abortOnCannotGrowMemory")) Module["abortOnCannotGrowMemory"] = function() { abort("'abortOnCannotGrowMemory' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "emscripten_realloc_buffer")) Module["emscripten_realloc_buffer"] = function() { abort("'emscripten_realloc_buffer' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "ENV")) Module["ENV"] = function() { abort("'ENV' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "withStackSave")) Module["withStackSave"] = function() { abort("'withStackSave' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "ERRNO_CODES")) Module["ERRNO_CODES"] = function() { abort("'ERRNO_CODES' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "ERRNO_MESSAGES")) Module["ERRNO_MESSAGES"] = function() { abort("'ERRNO_MESSAGES' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "setErrNo")) Module["setErrNo"] = function() { abort("'setErrNo' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "inetPton4")) Module["inetPton4"] = function() { abort("'inetPton4' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "inetNtop4")) Module["inetNtop4"] = function() { abort("'inetNtop4' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "inetPton6")) Module["inetPton6"] = function() { abort("'inetPton6' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "inetNtop6")) Module["inetNtop6"] = function() { abort("'inetNtop6' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "readSockaddr")) Module["readSockaddr"] = function() { abort("'readSockaddr' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "writeSockaddr")) Module["writeSockaddr"] = function() { abort("'writeSockaddr' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "DNS")) Module["DNS"] = function() { abort("'DNS' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "getHostByName")) Module["getHostByName"] = function() { abort("'getHostByName' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "GAI_ERRNO_MESSAGES")) Module["GAI_ERRNO_MESSAGES"] = function() { abort("'GAI_ERRNO_MESSAGES' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "Protocols")) Module["Protocols"] = function() { abort("'Protocols' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "Sockets")) Module["Sockets"] = function() { abort("'Sockets' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "getRandomDevice")) Module["getRandomDevice"] = function() { abort("'getRandomDevice' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "traverseStack")) Module["traverseStack"] = function() { abort("'traverseStack' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "convertFrameToPC")) Module["convertFrameToPC"] = function() { abort("'convertFrameToPC' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "UNWIND_CACHE")) Module["UNWIND_CACHE"] = function() { abort("'UNWIND_CACHE' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "saveInUnwindCache")) Module["saveInUnwindCache"] = function() { abort("'saveInUnwindCache' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "convertPCtoSourceLocation")) Module["convertPCtoSourceLocation"] = function() { abort("'convertPCtoSourceLocation' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "readAsmConstArgsArray")) Module["readAsmConstArgsArray"] = function() { abort("'readAsmConstArgsArray' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "readAsmConstArgs")) Module["readAsmConstArgs"] = function() { abort("'readAsmConstArgs' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "mainThreadEM_ASM")) Module["mainThreadEM_ASM"] = function() { abort("'mainThreadEM_ASM' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "jstoi_q")) Module["jstoi_q"] = function() { abort("'jstoi_q' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "jstoi_s")) Module["jstoi_s"] = function() { abort("'jstoi_s' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "getExecutableName")) Module["getExecutableName"] = function() { abort("'getExecutableName' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "listenOnce")) Module["listenOnce"] = function() { abort("'listenOnce' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "autoResumeAudioContext")) Module["autoResumeAudioContext"] = function() { abort("'autoResumeAudioContext' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "dynCall")) Module["dynCall"] = function() { abort("'dynCall' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "callRuntimeCallbacks")) Module["callRuntimeCallbacks"] = function() { abort("'callRuntimeCallbacks' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "wasmTableMirror")) Module["wasmTableMirror"] = function() { abort("'wasmTableMirror' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "setWasmTableEntry")) Module["setWasmTableEntry"] = function() { abort("'setWasmTableEntry' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "getWasmTableEntry")) Module["getWasmTableEntry"] = function() { abort("'getWasmTableEntry' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "handleException")) Module["handleException"] = function() { abort("'handleException' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "runtimeKeepalivePush")) Module["runtimeKeepalivePush"] = function() { abort("'runtimeKeepalivePush' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "runtimeKeepalivePop")) Module["runtimeKeepalivePop"] = function() { abort("'runtimeKeepalivePop' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "callUserCallback")) Module["callUserCallback"] = function() { abort("'callUserCallback' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "maybeExit")) Module["maybeExit"] = function() { abort("'maybeExit' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "safeSetTimeout")) Module["safeSetTimeout"] = function() { abort("'safeSetTimeout' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "asmjsMangle")) Module["asmjsMangle"] = function() { abort("'asmjsMangle' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "asyncLoad")) Module["asyncLoad"] = function() { abort("'asyncLoad' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "alignMemory")) Module["alignMemory"] = function() { abort("'alignMemory' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "mmapAlloc")) Module["mmapAlloc"] = function() { abort("'mmapAlloc' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "reallyNegative")) Module["reallyNegative"] = function() { abort("'reallyNegative' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "unSign")) Module["unSign"] = function() { abort("'unSign' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "reSign")) Module["reSign"] = function() { abort("'reSign' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "formatString")) Module["formatString"] = function() { abort("'formatString' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "PATH")) Module["PATH"] = function() { abort("'PATH' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "PATH_FS")) Module["PATH_FS"] = function() { abort("'PATH_FS' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "SYSCALLS")) Module["SYSCALLS"] = function() { abort("'SYSCALLS' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "syscallMmap2")) Module["syscallMmap2"] = function() { abort("'syscallMmap2' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "syscallMunmap")) Module["syscallMunmap"] = function() { abort("'syscallMunmap' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "getSocketFromFD")) Module["getSocketFromFD"] = function() { abort("'getSocketFromFD' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "getSocketAddress")) Module["getSocketAddress"] = function() { abort("'getSocketAddress' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "JSEvents")) Module["JSEvents"] = function() { abort("'JSEvents' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "registerKeyEventCallback")) Module["registerKeyEventCallback"] = function() { abort("'registerKeyEventCallback' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "specialHTMLTargets")) Module["specialHTMLTargets"] = function() { abort("'specialHTMLTargets' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "maybeCStringToJsString")) Module["maybeCStringToJsString"] = function() { abort("'maybeCStringToJsString' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "findEventTarget")) Module["findEventTarget"] = function() { abort("'findEventTarget' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "findCanvasEventTarget")) Module["findCanvasEventTarget"] = function() { abort("'findCanvasEventTarget' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "getBoundingClientRect")) Module["getBoundingClientRect"] = function() { abort("'getBoundingClientRect' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "fillMouseEventData")) Module["fillMouseEventData"] = function() { abort("'fillMouseEventData' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "registerMouseEventCallback")) Module["registerMouseEventCallback"] = function() { abort("'registerMouseEventCallback' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "registerWheelEventCallback")) Module["registerWheelEventCallback"] = function() { abort("'registerWheelEventCallback' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "registerUiEventCallback")) Module["registerUiEventCallback"] = function() { abort("'registerUiEventCallback' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "registerFocusEventCallback")) Module["registerFocusEventCallback"] = function() { abort("'registerFocusEventCallback' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "fillDeviceOrientationEventData")) Module["fillDeviceOrientationEventData"] = function() { abort("'fillDeviceOrientationEventData' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "registerDeviceOrientationEventCallback")) Module["registerDeviceOrientationEventCallback"] = function() { abort("'registerDeviceOrientationEventCallback' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "fillDeviceMotionEventData")) Module["fillDeviceMotionEventData"] = function() { abort("'fillDeviceMotionEventData' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "registerDeviceMotionEventCallback")) Module["registerDeviceMotionEventCallback"] = function() { abort("'registerDeviceMotionEventCallback' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "screenOrientation")) Module["screenOrientation"] = function() { abort("'screenOrientation' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "fillOrientationChangeEventData")) Module["fillOrientationChangeEventData"] = function() { abort("'fillOrientationChangeEventData' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "registerOrientationChangeEventCallback")) Module["registerOrientationChangeEventCallback"] = function() { abort("'registerOrientationChangeEventCallback' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "fillFullscreenChangeEventData")) Module["fillFullscreenChangeEventData"] = function() { abort("'fillFullscreenChangeEventData' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "registerFullscreenChangeEventCallback")) Module["registerFullscreenChangeEventCallback"] = function() { abort("'registerFullscreenChangeEventCallback' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "registerRestoreOldStyle")) Module["registerRestoreOldStyle"] = function() { abort("'registerRestoreOldStyle' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "hideEverythingExceptGivenElement")) Module["hideEverythingExceptGivenElement"] = function() { abort("'hideEverythingExceptGivenElement' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "restoreHiddenElements")) Module["restoreHiddenElements"] = function() { abort("'restoreHiddenElements' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "setLetterbox")) Module["setLetterbox"] = function() { abort("'setLetterbox' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "currentFullscreenStrategy")) Module["currentFullscreenStrategy"] = function() { abort("'currentFullscreenStrategy' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "restoreOldWindowedStyle")) Module["restoreOldWindowedStyle"] = function() { abort("'restoreOldWindowedStyle' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "softFullscreenResizeWebGLRenderTarget")) Module["softFullscreenResizeWebGLRenderTarget"] = function() { abort("'softFullscreenResizeWebGLRenderTarget' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "doRequestFullscreen")) Module["doRequestFullscreen"] = function() { abort("'doRequestFullscreen' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "fillPointerlockChangeEventData")) Module["fillPointerlockChangeEventData"] = function() { abort("'fillPointerlockChangeEventData' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "registerPointerlockChangeEventCallback")) Module["registerPointerlockChangeEventCallback"] = function() { abort("'registerPointerlockChangeEventCallback' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "registerPointerlockErrorEventCallback")) Module["registerPointerlockErrorEventCallback"] = function() { abort("'registerPointerlockErrorEventCallback' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "requestPointerLock")) Module["requestPointerLock"] = function() { abort("'requestPointerLock' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "fillVisibilityChangeEventData")) Module["fillVisibilityChangeEventData"] = function() { abort("'fillVisibilityChangeEventData' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "registerVisibilityChangeEventCallback")) Module["registerVisibilityChangeEventCallback"] = function() { abort("'registerVisibilityChangeEventCallback' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "registerTouchEventCallback")) Module["registerTouchEventCallback"] = function() { abort("'registerTouchEventCallback' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "fillGamepadEventData")) Module["fillGamepadEventData"] = function() { abort("'fillGamepadEventData' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "registerGamepadEventCallback")) Module["registerGamepadEventCallback"] = function() { abort("'registerGamepadEventCallback' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "registerBeforeUnloadEventCallback")) Module["registerBeforeUnloadEventCallback"] = function() { abort("'registerBeforeUnloadEventCallback' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "fillBatteryEventData")) Module["fillBatteryEventData"] = function() { abort("'fillBatteryEventData' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "battery")) Module["battery"] = function() { abort("'battery' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "registerBatteryEventCallback")) Module["registerBatteryEventCallback"] = function() { abort("'registerBatteryEventCallback' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "setCanvasElementSize")) Module["setCanvasElementSize"] = function() { abort("'setCanvasElementSize' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "getCanvasElementSize")) Module["getCanvasElementSize"] = function() { abort("'getCanvasElementSize' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "demangle")) Module["demangle"] = function() { abort("'demangle' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "demangleAll")) Module["demangleAll"] = function() { abort("'demangleAll' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "jsStackTrace")) Module["jsStackTrace"] = function() { abort("'jsStackTrace' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "stackTrace")) Module["stackTrace"] = function() { abort("'stackTrace' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "getEnvStrings")) Module["getEnvStrings"] = function() { abort("'getEnvStrings' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "checkWasiClock")) Module["checkWasiClock"] = function() { abort("'checkWasiClock' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "writeI53ToI64")) Module["writeI53ToI64"] = function() { abort("'writeI53ToI64' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "writeI53ToI64Clamped")) Module["writeI53ToI64Clamped"] = function() { abort("'writeI53ToI64Clamped' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "writeI53ToI64Signaling")) Module["writeI53ToI64Signaling"] = function() { abort("'writeI53ToI64Signaling' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "writeI53ToU64Clamped")) Module["writeI53ToU64Clamped"] = function() { abort("'writeI53ToU64Clamped' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "writeI53ToU64Signaling")) Module["writeI53ToU64Signaling"] = function() { abort("'writeI53ToU64Signaling' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "readI53FromI64")) Module["readI53FromI64"] = function() { abort("'readI53FromI64' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "readI53FromU64")) Module["readI53FromU64"] = function() { abort("'readI53FromU64' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "convertI32PairToI53")) Module["convertI32PairToI53"] = function() { abort("'convertI32PairToI53' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "convertU32PairToI53")) Module["convertU32PairToI53"] = function() { abort("'convertU32PairToI53' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "setImmediateWrapped")) Module["setImmediateWrapped"] = function() { abort("'setImmediateWrapped' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "clearImmediateWrapped")) Module["clearImmediateWrapped"] = function() { abort("'clearImmediateWrapped' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "polyfillSetImmediate")) Module["polyfillSetImmediate"] = function() { abort("'polyfillSetImmediate' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "uncaughtExceptionCount")) Module["uncaughtExceptionCount"] = function() { abort("'uncaughtExceptionCount' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "exceptionLast")) Module["exceptionLast"] = function() { abort("'exceptionLast' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "exceptionCaught")) Module["exceptionCaught"] = function() { abort("'exceptionCaught' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "ExceptionInfo")) Module["ExceptionInfo"] = function() { abort("'ExceptionInfo' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "CatchInfo")) Module["CatchInfo"] = function() { abort("'CatchInfo' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "exception_addRef")) Module["exception_addRef"] = function() { abort("'exception_addRef' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "exception_decRef")) Module["exception_decRef"] = function() { abort("'exception_decRef' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "Browser")) Module["Browser"] = function() { abort("'Browser' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "funcWrappers")) Module["funcWrappers"] = function() { abort("'funcWrappers' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "getFuncWrapper")) Module["getFuncWrapper"] = function() { abort("'getFuncWrapper' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "setMainLoop")) Module["setMainLoop"] = function() { abort("'setMainLoop' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "wget")) Module["wget"] = function() { abort("'wget' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "tempFixedLengthArray")) Module["tempFixedLengthArray"] = function() { abort("'tempFixedLengthArray' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "miniTempWebGLFloatBuffers")) Module["miniTempWebGLFloatBuffers"] = function() { abort("'miniTempWebGLFloatBuffers' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "heapObjectForWebGLType")) Module["heapObjectForWebGLType"] = function() { abort("'heapObjectForWebGLType' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "heapAccessShiftForWebGLHeap")) Module["heapAccessShiftForWebGLHeap"] = function() { abort("'heapAccessShiftForWebGLHeap' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "GL")) Module["GL"] = function() { abort("'GL' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "emscriptenWebGLGet")) Module["emscriptenWebGLGet"] = function() { abort("'emscriptenWebGLGet' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "computeUnpackAlignedImageSize")) Module["computeUnpackAlignedImageSize"] = function() { abort("'computeUnpackAlignedImageSize' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "emscriptenWebGLGetTexPixelData")) Module["emscriptenWebGLGetTexPixelData"] = function() { abort("'emscriptenWebGLGetTexPixelData' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "emscriptenWebGLGetUniform")) Module["emscriptenWebGLGetUniform"] = function() { abort("'emscriptenWebGLGetUniform' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "webglGetUniformLocation")) Module["webglGetUniformLocation"] = function() { abort("'webglGetUniformLocation' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "webglPrepareUniformLocationsBeforeFirstUse")) Module["webglPrepareUniformLocationsBeforeFirstUse"] = function() { abort("'webglPrepareUniformLocationsBeforeFirstUse' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "webglGetLeftBracePos")) Module["webglGetLeftBracePos"] = function() { abort("'webglGetLeftBracePos' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "emscriptenWebGLGetVertexAttrib")) Module["emscriptenWebGLGetVertexAttrib"] = function() { abort("'emscriptenWebGLGetVertexAttrib' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "writeGLArray")) Module["writeGLArray"] = function() { abort("'writeGLArray' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
 Module["FS"] = FS;
-unexportedRuntimeFunction('MEMFS', false);
-unexportedRuntimeFunction('TTY', false);
-unexportedRuntimeFunction('PIPEFS', false);
-unexportedRuntimeFunction('SOCKFS', false);
-unexportedRuntimeFunction('_setNetworkCallback', false);
-unexportedRuntimeFunction('tempFixedLengthArray', false);
-unexportedRuntimeFunction('miniTempWebGLFloatBuffers', false);
-unexportedRuntimeFunction('heapObjectForWebGLType', false);
-unexportedRuntimeFunction('heapAccessShiftForWebGLHeap', false);
-unexportedRuntimeFunction('GL', false);
-unexportedRuntimeFunction('emscriptenWebGLGet', false);
-unexportedRuntimeFunction('computeUnpackAlignedImageSize', false);
-unexportedRuntimeFunction('emscriptenWebGLGetTexPixelData', false);
-unexportedRuntimeFunction('emscriptenWebGLGetUniform', false);
-unexportedRuntimeFunction('webglGetUniformLocation', false);
-unexportedRuntimeFunction('webglPrepareUniformLocationsBeforeFirstUse', false);
-unexportedRuntimeFunction('webglGetLeftBracePos', false);
-unexportedRuntimeFunction('emscriptenWebGLGetVertexAttrib', false);
-unexportedRuntimeFunction('writeGLArray', false);
-unexportedRuntimeFunction('AL', false);
-unexportedRuntimeFunction('SDL_unicode', false);
-unexportedRuntimeFunction('SDL_ttfContext', false);
-unexportedRuntimeFunction('SDL_audio', false);
-unexportedRuntimeFunction('SDL', false);
-unexportedRuntimeFunction('SDL_gfx', false);
-unexportedRuntimeFunction('GLUT', false);
-unexportedRuntimeFunction('EGL', false);
-unexportedRuntimeFunction('GLFW_Window', false);
-unexportedRuntimeFunction('GLFW', false);
-unexportedRuntimeFunction('GLEW', false);
-unexportedRuntimeFunction('IDBStore', false);
-unexportedRuntimeFunction('runAndAbortIfError', false);
+if (!Object.getOwnPropertyDescriptor(Module, "MEMFS")) Module["MEMFS"] = function() { abort("'MEMFS' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "TTY")) Module["TTY"] = function() { abort("'TTY' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "PIPEFS")) Module["PIPEFS"] = function() { abort("'PIPEFS' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "SOCKFS")) Module["SOCKFS"] = function() { abort("'SOCKFS' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "_setNetworkCallback")) Module["_setNetworkCallback"] = function() { abort("'_setNetworkCallback' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "AL")) Module["AL"] = function() { abort("'AL' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "SDL_unicode")) Module["SDL_unicode"] = function() { abort("'SDL_unicode' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "SDL_ttfContext")) Module["SDL_ttfContext"] = function() { abort("'SDL_ttfContext' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "SDL_audio")) Module["SDL_audio"] = function() { abort("'SDL_audio' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "SDL")) Module["SDL"] = function() { abort("'SDL' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "SDL_gfx")) Module["SDL_gfx"] = function() { abort("'SDL_gfx' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "GLUT")) Module["GLUT"] = function() { abort("'GLUT' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "EGL")) Module["EGL"] = function() { abort("'EGL' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "GLFW_Window")) Module["GLFW_Window"] = function() { abort("'GLFW_Window' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "GLFW")) Module["GLFW"] = function() { abort("'GLFW' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "GLEW")) Module["GLEW"] = function() { abort("'GLEW' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "IDBStore")) Module["IDBStore"] = function() { abort("'IDBStore' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "runAndAbortIfError")) Module["runAndAbortIfError"] = function() { abort("'runAndAbortIfError' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
 Module["PThread"] = PThread;
-unexportedRuntimeFunction('killThread', false);
-unexportedRuntimeFunction('cleanupThread', false);
-unexportedRuntimeFunction('registerTlsInit', false);
-unexportedRuntimeFunction('cancelThread', false);
-unexportedRuntimeFunction('spawnThread', false);
-unexportedRuntimeFunction('exitOnMainThread', false);
-unexportedRuntimeFunction('invokeEntryPoint', false);
-unexportedRuntimeFunction('executeNotifiedProxyingQueue', false);
-unexportedRuntimeFunction('warnOnce', false);
-unexportedRuntimeFunction('stackSave', false);
-unexportedRuntimeFunction('stackRestore', false);
-unexportedRuntimeFunction('stackAlloc', false);
-unexportedRuntimeFunction('AsciiToString', false);
-unexportedRuntimeFunction('stringToAscii', false);
-unexportedRuntimeFunction('UTF16ToString', false);
-unexportedRuntimeFunction('stringToUTF16', false);
-unexportedRuntimeFunction('lengthBytesUTF16', false);
-unexportedRuntimeFunction('UTF32ToString', false);
-unexportedRuntimeFunction('stringToUTF32', false);
-unexportedRuntimeFunction('lengthBytesUTF32', false);
-unexportedRuntimeFunction('allocateUTF8', false);
-unexportedRuntimeFunction('allocateUTF8OnStack', false);
+if (!Object.getOwnPropertyDescriptor(Module, "killThread")) Module["killThread"] = function() { abort("'killThread' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "cleanupThread")) Module["cleanupThread"] = function() { abort("'cleanupThread' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "registerTlsInit")) Module["registerTlsInit"] = function() { abort("'registerTlsInit' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "cancelThread")) Module["cancelThread"] = function() { abort("'cancelThread' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "spawnThread")) Module["spawnThread"] = function() { abort("'spawnThread' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "exitOnMainThread")) Module["exitOnMainThread"] = function() { abort("'exitOnMainThread' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "establishStackSpace")) Module["establishStackSpace"] = function() { abort("'establishStackSpace' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "invokeEntryPoint")) Module["invokeEntryPoint"] = function() { abort("'invokeEntryPoint' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "warnOnce")) Module["warnOnce"] = function() { abort("'warnOnce' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "stackSave")) Module["stackSave"] = function() { abort("'stackSave' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "stackRestore")) Module["stackRestore"] = function() { abort("'stackRestore' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "stackAlloc")) Module["stackAlloc"] = function() { abort("'stackAlloc' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "AsciiToString")) Module["AsciiToString"] = function() { abort("'AsciiToString' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "stringToAscii")) Module["stringToAscii"] = function() { abort("'stringToAscii' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "UTF16ToString")) Module["UTF16ToString"] = function() { abort("'UTF16ToString' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "stringToUTF16")) Module["stringToUTF16"] = function() { abort("'stringToUTF16' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "lengthBytesUTF16")) Module["lengthBytesUTF16"] = function() { abort("'lengthBytesUTF16' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "UTF32ToString")) Module["UTF32ToString"] = function() { abort("'UTF32ToString' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "stringToUTF32")) Module["stringToUTF32"] = function() { abort("'stringToUTF32' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "lengthBytesUTF32")) Module["lengthBytesUTF32"] = function() { abort("'lengthBytesUTF32' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "allocateUTF8")) Module["allocateUTF8"] = function() { abort("'allocateUTF8' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+if (!Object.getOwnPropertyDescriptor(Module, "allocateUTF8OnStack")) Module["allocateUTF8OnStack"] = function() { abort("'allocateUTF8OnStack' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") };
 Module["writeStackCookie"] = writeStackCookie;
 Module["checkStackCookie"] = checkStackCookie;
 Module["PThread"] = PThread;
 Module["wasmMemory"] = wasmMemory;
 Module["ExitStatus"] = ExitStatus;
 Module["ALLOC_NORMAL"] = ALLOC_NORMAL;
-unexportedRuntimeSymbol('ALLOC_STACK', false);
+if (!Object.getOwnPropertyDescriptor(Module, "ALLOC_STACK")) Object.defineProperty(Module, "ALLOC_STACK", { configurable: true, get: function() { abort("'ALLOC_STACK' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)") } });
 
 var calledRun;
 
@@ -14121,11 +14787,11 @@ function checkUnflushedContent() {
   var oldOut = out;
   var oldErr = err;
   var has = false;
-  out = err = (x) => {
+  out = err = function(x) {
     has = true;
   }
   try { // it doesn't matter if it fails
-    ___stdio_exit();
+    _fflush(0);
     // also flush in the JS FS layer
     ['stdout', 'stderr'].forEach(function(name) {
       var info = FS.analyzePath('/dev/' + name);
@@ -14163,11 +14829,15 @@ function exit(status, implicit) {
     }
   }
 
-  // if exit() was called explicitly, warn the user if the runtime isn't actually being shut down
-  if (keepRuntimeAlive() && !implicit) {
-    var msg = 'program exited (with status: ' + status + '), but EXIT_RUNTIME is not set, so halting execution but not exiting the runtime or preventing further async execution (build with EXIT_RUNTIME=1, if you want a true shutdown)';
-    readyPromiseReject(msg);
-    err(msg);
+  if (keepRuntimeAlive()) {
+    // if exit() was called, we may warn the user if the runtime isn't actually being shut down
+    if (!implicit) {
+      var msg = 'program exited (with status: ' + status + '), but EXIT_RUNTIME is not set, so halting execution but not exiting the runtime or preventing further async execution (build with EXIT_RUNTIME=1, if you want a true shutdown)';
+      readyPromiseReject(msg);
+      err(msg);
+    }
+  } else {
+    exitRuntime();
   }
 
   procExit(status);
@@ -14188,6 +14858,18 @@ if (Module['preInit']) {
   while (Module['preInit'].length > 0) {
     Module['preInit'].pop()();
   }
+}
+
+if (ENVIRONMENT_IS_PTHREAD) {
+  // The default behaviour for pthreads is always to exit once they return
+  // from their entry point (or call pthread_exit).  If we set noExitRuntime
+  // to true here on pthreads they would never complete and attempt to
+  // pthread_join to them would block forever.
+  // pthreads can still choose to set `noExitRuntime` explicitly, or
+  // call emscripten_unwind_to_js_event_loop to extend their lifetime beyond
+  // their main function.  See comment in src/worker.js for more.
+  noExitRuntime = false;
+  PThread.initWorker();
 }
 
 run();

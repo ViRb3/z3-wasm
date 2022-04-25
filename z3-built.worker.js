@@ -13,8 +13,7 @@
 var Module = {};
 
 // Node.js support
-var ENVIRONMENT_IS_NODE = typeof process == 'object' && typeof process.versions == 'object' && typeof process.versions.node == 'string';
-if (ENVIRONMENT_IS_NODE) {
+if (typeof process === 'object' && typeof process.versions === 'object' && typeof process.versions.node === 'string') {
   // Create as web-worker-like an environment as we can.
 
   var nodeWorkerThreads = require('worker_threads');
@@ -25,7 +24,7 @@ if (ENVIRONMENT_IS_NODE) {
     onmessage({ data: data });
   });
 
-  var fs = require('fs');
+  var nodeFS = require('fs');
 
   Object.assign(global, {
     self: global,
@@ -36,7 +35,7 @@ if (ENVIRONMENT_IS_NODE) {
     },
     Worker: nodeWorkerThreads.Worker,
     importScripts: function(f) {
-      (0, eval)(fs.readFileSync(f, 'utf8'));
+      (0, eval)(nodeFS.readFileSync(f, 'utf8'));
     },
     postMessage: function(msg) {
       parentPort.postMessage(msg);
@@ -57,11 +56,6 @@ function assert(condition, text) {
 
 function threadPrintErr() {
   var text = Array.prototype.slice.call(arguments).join(' ');
-  // See https://github.com/emscripten-core/emscripten/issues/14804
-  if (ENVIRONMENT_IS_NODE) {
-    fs.writeSync(2, text + '\n');
-    return;
-  }
   console.error(text);
 }
 function threadAlert() {
@@ -71,11 +65,13 @@ function threadAlert() {
 // We don't need out() for now, but may need to add it if we want to use it
 // here. Or, if this code all moves into the main JS, that problem will go
 // away. (For now, adding it here increases code size for no benefit.)
-var out = () => { throw 'out() is not defined in worker.js.'; }
+var out = function() {
+  throw 'out() is not defined in worker.js.';
+}
 var err = threadPrintErr;
 self.alert = threadAlert;
 
-Module['instantiateWasm'] = (info, receiveInstance) => {
+Module['instantiateWasm'] = function(info, receiveInstance) {
   // Instantiate from the module posted from the main thread.
   // We can just use sync instantiation in the worker.
   var instance = new WebAssembly.Instance(Module['wasmModule'], info);
@@ -86,9 +82,9 @@ Module['instantiateWasm'] = (info, receiveInstance) => {
   // We don't need the module anymore; new threads will be spawned from the main thread.
   Module['wasmModule'] = null;
   return instance.exports;
-}
+};
 
-self.onmessage = (e) => {
+self.onmessage = function(e) {
   try {
     if (e.data.cmd === 'load') { // Preload command that is called once per worker to parse and load the Emscripten code.
 
@@ -101,7 +97,7 @@ self.onmessage = (e) => {
 
       Module['ENVIRONMENT_IS_PTHREAD'] = true;
 
-      if (typeof e.data.urlOrBlob == 'string') {
+      if (typeof e.data.urlOrBlob === 'string') {
         importScripts(e.data.urlOrBlob);
       } else {
         var objectUrl = URL.createObjectURL(e.data.urlOrBlob);
@@ -140,7 +136,7 @@ self.onmessage = (e) => {
         // That is not acceptable per C/C++ specification, but x86 compiler ABI extensions
         // enable that to work. If you find the following line to crash, either change the signature
         // to "proper" void *ThreadMain(void *arg) form, or try linking with the Emscripten linker
-        // flag -sEMULATE_FUNCTION_POINTER_CASTS to add in emulation for this x86 ABI extension.
+        // flag -s EMULATE_FUNCTION_POINTER_CASTS=1 to add in emulation for this x86 ABI extension.
         var result = Module['invokeEntryPoint'](e.data.start_routine, e.data.arg);
 
         Module['checkStackCookie']();
@@ -178,8 +174,10 @@ self.onmessage = (e) => {
       }
     } else if (e.data.target === 'setimmediate') {
       // no-op
-    } else if (e.data.cmd === 'processProxyingQueue') {
-      executeNotifiedProxyingQueue(e.data.queue);
+    } else if (e.data.cmd === 'processThreadQueue') {
+      if (Module['_pthread_self']()) { // If this thread is actually running?
+        Module['_emscripten_current_thread_process_queued_calls']();
+      }
     } else {
       err('worker.js received unknown command ' + e.data.cmd);
       err(e.data);
@@ -187,9 +185,6 @@ self.onmessage = (e) => {
   } catch(ex) {
     err('worker.js onmessage() captured an uncaught exception: ' + ex);
     if (ex && ex.stack) err(ex.stack);
-    if (Module['__emscripten_thread_crashed']) {
-      Module['__emscripten_thread_crashed']();
-    }
     throw ex;
   }
 };
