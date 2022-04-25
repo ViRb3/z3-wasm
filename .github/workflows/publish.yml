@@ -16,7 +16,6 @@ jobs:
 
       - name: Build Website
         run: |
-          curl -sL https://github.com/$GITHUB_REPO/releases/download/$Z3_BUILD_TAG/z3.tar.gz | tar xz -C static/
           npm i
           npm run build
         env:

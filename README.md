@@ -8,8 +8,6 @@ A simple Z3 SMT2 analyzer, ran entirely in your browser using WebAssembly.
 
 ## Building
 
-Place all Z3 assets into the directory `static/`. If you want pre-built binaries, check the `z3` branch on this repo. Then, run:
-
 ```bash
 npm i
 npm run build

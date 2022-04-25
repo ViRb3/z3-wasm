@@ -1,5 +1,5 @@
-import { init } from "../static/wrapper";
-import initZ3 from "../static/z3-built";
+import { init } from "../node_modules/z3-solver/build/wrapper";
+import initZ3 from "../node_modules/z3-solver/build/z3-built";
 
 (async () => {
   var editor;
